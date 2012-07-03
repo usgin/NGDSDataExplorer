@@ -235,7 +235,7 @@ var ctrl, action, toolbarItems = [], actions = {};
 		handler: function () {
 			if (activeLayer != undefined){
 				//console.log(activeLayer);													// Projection issue?
-				//var bounds = new OpenLayers.Bounds("-113.1667, 31.5, -109.25, 36.5");    // Hardcoded for testing
+				//var bounds = new OpenLayers.Bounds("-113.1667, 31.5, -109.25, 36.5").transform(wgs84, googleMercator),;    // Hardcoded for testing
 				//map.zoomToExtent(bounds);
 				new OpenLayers.Control.ZoomToMaxExtent();
 				//new OpenLayers.Control.zoomToExtent(activeLayer.getDataExtent());
@@ -301,8 +301,8 @@ var ctrl, action, toolbarItems = [], actions = {};
     });
     actions["clear_poly"] = action;
     toolbarItems.push(action);
-    toolbarItems.push("-");*/
-	
+    toolbarItems.push("-");
+*/	
 	// Button to clear all selected features
 	action = new GeoExt.Action({ 
         text: "clear all selected",
