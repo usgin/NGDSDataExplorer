@@ -87,9 +87,31 @@ var ctrl, action, toolbarItems = [], actions = {};
     toolbarItems.push(action);
     toolbarItems.push("-");
 */	
+
+	// Button to allow for selection of features by drawing a box     
+	action = new Ext.Action({ 
+        text: "select box",
+        tooltip: "draw a box to select multiple features",
+		enableToggle: true, 
+		toggleHandler: function(button, state) {
+			if (state == true){
+				selectBoxCtrl.activate();
+				selectCtrl.deactivate();
+			}
+			else {
+				selectCtrl.activate();
+				selectBoxCtrl.deactivate();
+			}
+		}
+    });
+    actions["select_box"] = action;
+    toolbarItems.push(action);
+    toolbarItems.push("-");	
+
+
 	// Button to clear all selected features
 	action = new GeoExt.Action({ 
-        text: "clear all selected",
+        text: "clear selected",
         tooltip: "clear all selected features",
         map: map,		
 		handler: function(item, pressed) {

@@ -2,15 +2,26 @@
 
 // Allow for selecting/unselecting a feature and set options	
 function MakeSelectable(){
+	// Control for only the selection of individual features
 	selectCtrl = new OpenLayers.Control.SelectFeature(wfsLayers, {
+		clickout: false, 
+		toggle: true,
+		multiple: true,
+		hover: false,
+		box: false
+	});
+	map.addControl(selectCtrl); 
+	selectCtrl.activate();
+	
+	// Control for the selecting of mulitple features by drawing a box
+	selectBoxCtrl = new OpenLayers.Control.SelectFeature(wfsLayers, {
 		clickout: false, 
 		toggle: true,
 		multiple: true,
 		hover: false,
 		box: true
 	});
-	map.addControl(selectCtrl); 
-	selectCtrl.activate();
+	map.addControl(selectBoxCtrl); 
 	
 	wfsLayers[j].events.on({
 		"featureselected": function(e) {

@@ -12,6 +12,7 @@ var numOfAttributes;   	// Only needed for EXCEL - can delete
 var layerAttributes;	// The attributes of the layer
 var usedUrls = [];		// Array of base Urls that have been used already
 var selectCtrl; 		// Control for the selection features
+var selectBoxCtrl;		// Control 
 
 // Projections
 var wgs84 = new OpenLayers.Projection("EPSG:4326");
