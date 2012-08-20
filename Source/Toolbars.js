@@ -88,7 +88,7 @@ var ctrl, action, toolbarItems = [], actions = {};
     toolbarItems.push("-");
 */	
 
-	// Button to allow for selection of features by drawing a box     
+	// Button to allow for selection of mulitple features by drawing a box     
 	action = new Ext.Action({ 
         text: "select box",
         tooltip: "draw a box to select multiple features",
@@ -107,7 +107,6 @@ var ctrl, action, toolbarItems = [], actions = {};
     actions["select_box"] = action;
     toolbarItems.push(action);
     toolbarItems.push("-");	
-
 
 	// Button to clear all selected features
 	action = new GeoExt.Action({ 
@@ -135,8 +134,16 @@ var ctrl, action, toolbarItems = [], actions = {};
 		toggleHandler: function(button, state) {
 			if (state == true)
 				showPopups = true;
-			else
+			else {
 				showPopups = false;
+				
+				//get all existing popups
+				var popups = Ext.WindowMgr.getBy(function(win){return (win instanceof GeoExt.Popup)});
+
+				//kill all existing popups
+				for (var i =0; i < popups.length; i++)
+					popups[i].destroy();
+			}
 		}
     });
     actions["show_popups"] = action;
