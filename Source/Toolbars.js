@@ -17,15 +17,14 @@ var ctrl, action, toolbarItems = [], actions = {};
     toolbarItems.push(action);
     toolbarItems.push("-");
 	
-	// Zoom to active layer						     !!!!!!!!!!!!!!!!!!!!!!!!!!!! NOT WORKING !!!!!!!!!!!!!!!!!!!!!!!
-/*    action = new GeoExt.Action({
+	// Zoom to active layer						   
+    action = new GeoExt.Action({
 		//control: ZoomActiveLayer(),
 		handler: function () {
-			if (activeLayer != undefined){
-				new OpenLayers.Control.zoomToExtent(activeLayer.getDataExtent());				
-				var bounds = new OpenLayers.Bounds("-113.1667, 31.5, -109.25, 36.5").transform(wgs84, googleMercator);    // Hardcoded for testing
-				map.zoomToExtent(bounds);
-			}
+			if (activeLayer != undefined)
+				map.zoomToExtent(activeLayer.getDataExtent());	
+			else
+				alert("Select an active layer.");
 		},
         map: map,
 		disabled: false,
@@ -35,7 +34,7 @@ var ctrl, action, toolbarItems = [], actions = {};
     actions["zoom_layer"] = action;
     toolbarItems.push(action);
     toolbarItems.push("-");
-*/	
+	
 	// Navigation history
     ctrl = new OpenLayers.Control.NavigationHistory();
     map.addControl(ctrl);
@@ -94,13 +93,22 @@ var ctrl, action, toolbarItems = [], actions = {};
         tooltip: "draw a box to select multiple features",
 		enableToggle: true, 
 		toggleHandler: function(button, state) {
-			if (state == true){
-				selectBoxCtrl.activate();
-				selectCtrl.deactivate();
+			// If select control hasn't been defined yet (no layers added) don't allow toggle to stay depressed
+			// otherwise activate the selectBoxCtrl and deactivate the selectCtrl if the toggle is depressed
+			if (selectCtrl == undefined) {
+				this.toggle(false);
 			}
-			else {
-				selectCtrl.activate();
-				selectBoxCtrl.deactivate();
+			else{
+				if (state == true){
+					selectCtrl.deactivate();
+					selectBoxCtrl.activate();
+					selectBox = true;
+				}
+				else {
+					selectBoxCtrl.deactivate();
+					selectCtrl.activate();
+					selectBox = false;
+				}
 			}
 		}
     });
@@ -194,24 +202,13 @@ var ctrl, action, toolbarItems = [], actions = {};
 	return toolbarItems;
 }
 
-// Zoom to the feature extent of the active layer    					 !!!!!!!!!!!!!!!!!!!!!  Not being used  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-function ZoomActiveLayer(){
-	var zoomCtrl = [];
-	if (activeLayer != undefined) {
-		zoomCtrl.push(new OpenLayers.Control.zoomToExtent(OpenLayers.Bounds(-113.1667, 31.5, -109.25, 36.5)));
-		zoomCtrl.push(new OpenLayers.Control.zoomToExtent(activeLayer.getDataExtent()));
-	}
-	//console.log(zoomCtrl);
-	return zoomCtrl[0];
-}
-
 // Create the toolbar for the data services combo box and the base url input box
 function CreateDataServicesToolbar(){
 	var dataServicesToolbar = [];
 	
 	// Create the Data Services combo box
 	dataServicesToolbar.push([{
-		width:			175,
+		width:			175, 
 		//width:        194,  // Width without the Url button
 		xtype:          'combo',
 		mode:           'local',
@@ -301,7 +298,6 @@ function CreateDataServicesToolbar(){
 				}
 			}]
 		})
-
 	}]);
 	
 	return dataServicesToolbar;

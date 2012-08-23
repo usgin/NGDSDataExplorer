@@ -10,8 +10,7 @@ function MakeSelectable(){
 		hover: false,
 		box: false
 	});
-	map.addControl(selectCtrl); 
-	selectCtrl.activate();
+	map.addControl(selectCtrl);
 	
 	// Control for the selecting of mulitple features by drawing a box
 	selectBoxCtrl = new OpenLayers.Control.SelectFeature(wfsLayers, {
@@ -23,6 +22,18 @@ function MakeSelectable(){
 	});
 	map.addControl(selectBoxCtrl); 
 	
+	// If the selectBox toggle is not depressed activate selectCtrl otherwise activate selectBoxCtrl
+	if (selectBox == false){
+		selectBoxCtrl.activate();
+		selectBoxCtrl.deactivate();
+		selectCtrl.activate();
+	}
+	else{
+		selectCtrl.activate();
+		selectCtrl.deactivate();
+		selectBoxCtrl.activate();
+	}
+
 	wfsLayers[j].events.on({
 		"featureselected": function(e) {
 			if (showPopups == true){

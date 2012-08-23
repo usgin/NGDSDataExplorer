@@ -11,8 +11,9 @@ var selFeatures = [];	// Array of selected features across all layers
 var numOfAttributes;   	// Only needed for EXCEL - can delete
 var layerAttributes;	// The attributes of the layer
 var usedUrls = [];		// Array of base Urls that have been used already
-var selectCtrl; 		// Control for the selection features
-var selectBoxCtrl;		// Control 
+var selectCtrl; 		// Control for the selection of individual features
+var selectBoxCtrl;		// Control for the selection of mulitple features by drawing a box
+var selectBox = false;	// The 'select box' is not initially pressed
 
 // Projections
 var wgs84 = new OpenLayers.Projection("EPSG:4326");
