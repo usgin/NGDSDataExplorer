@@ -1,0 +1,15 @@
+div.olControlScaleLine {
+	right: auto;
+	bottom: 20px;
+	left: 70px;
+	color: white;
+}
+
+div.olControlMousePosition {
+    top: 0em;
+	color: white;
+}
+
+div.olControlOverviewMapElement {
+    padding: 5px 5px 5px 5px;
+}
