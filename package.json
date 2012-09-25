@@ -1,5 +1,5 @@
 {
-	"name": "NGDS Data Portal",
+	"name": "ngds-data-portal",
 	"author": "Jessica Alisdairi",
 	"description": "GeoExt application for consuming data from NGDS WFS Services",
     "version": "1.0.0",
