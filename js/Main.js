@@ -102,6 +102,7 @@ Ext.onReady(function() {
 		id: 'form-panel',
         region: 'north',
 		height: 135,
+		title: 'USGIN AASG Geothermal Data',
 		hideLabels: true,
 		items: [Search()],
 		buttons: [{ 
@@ -229,7 +230,7 @@ Ext.onReady(function() {
 			// The West Panel, composed of the Search Panel & the Tree Panel
             region: "west",
             id: 'layout-browser',
-			title: 'NGDS Data-Getter',
+			title: 'NGDS Data Portal',
 			layout: 'border',
 	        border: false,
 	        split:true,

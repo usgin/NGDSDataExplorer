@@ -16,7 +16,7 @@ function Search(){
 	var searchItems = [];
 	
 	// Create the Catalog Services combo box
-	searchItems.push([{
+/*	searchItems.push([{
 		width: 			188,
 		xtype:          'combo',
 		mode:           'local',
@@ -32,8 +32,8 @@ function Search(){
 		store: 			new Ext.data.JsonStore({
 			fields: ['name', 'value'],
 			data: [
-				{name: 'USGIN AASG Geothermal Data Catalog', value: 'http://catalog.stategeothermaldata.org/geoportal/csw?'}//,
-			//	{name: 'Test', value: 'http://wygl.wygisc.org/wygeolib/csw/discovery?'}
+				{name: 'USGIN AASG Geothermal Data Catalog', value: 'http://catalog.stategeothermaldata.org/geoportal/csw?'},
+				{name: 'Test', value: 'http://wygl.wygisc.org/wygeolib/csw/discovery?'}
 			]
 		}),
 		listeners: {
@@ -42,7 +42,7 @@ function Search(){
 				searchCatService = record.data.value;
 			}
 		}
-	}]);
+	}]);*/
 	
 		// Create the Catalog Services combo box
 	searchItems.push([{

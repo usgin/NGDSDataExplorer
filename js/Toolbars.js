@@ -230,7 +230,7 @@ function CreateDataServicesToolbar(){
 		store: 			new Ext.data.JsonStore({
 			fields: ['name', 'value'],
 			data: [
-				{name: 'AZActiveFaults', value: 'http://services.azgs.az.gov/arcgis/services/aasggeothermal/AZActiveFaults/MapServer/WFSServer'}, // !!!!!! PARSING ERRROR !!!!!
+				//{name: 'AZActiveFaults', value: 'http://services.azgs.az.gov/arcgis/services/aasggeothermal/AZActiveFaults/MapServer/WFSServer'}, // !!!!!! PARSING ERRROR !!!!!
 				{name: 'AZaqSpringChemistry', value: 'http://services.azgs.az.gov/arcgis/services/aasggeothermal/AZaqSpringChemistry/MapServer/WFSServer'},
 				{name: 'AZaqWellChemistry', value: 'http://services.azgs.az.gov/arcgis/services/aasggeothermal/AZaqWellChemistry/MapServer/WFSServer'},
 				{name: 'AZBoreholeTemperatures', value: 'http://services.azgs.az.gov/arcgis/services/aasggeothermal/AZBoreholeTemperatures/MapServer/WFSServer'},

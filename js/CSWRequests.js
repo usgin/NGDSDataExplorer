@@ -49,11 +49,9 @@ function CreateParams() {
 			elementSetName: "full",
 			startPostion: startPos,
 			maxRecords: maxRecords,
-			contraintLanguage: "FILTER",
 			constraint: "<ogc:Filter xmlns:ogc='http://www.opengis.net/ogc'><ogc:And><ogc:PropertyIsLike wildCard='*' singleChar='.' escapeChar='!'><ogc:PropertyName>"+searchField+"</ogc:PropertyName><ogc:Literal>"+searchTerm+"</ogc:Literal></ogc:PropertyIsLike></ogc:And></ogc:Filter>",
-			
-			sortBy: "dc:title",
-			constraint_language_version: "1.1.0"
+			contraintLanguage: "FILTER",
+			sortBy: "dc:title"
 		};
 	}
 	else {
