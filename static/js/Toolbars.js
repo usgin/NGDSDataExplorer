@@ -190,12 +190,12 @@ var ctrl, action, toolbarItems = [], actions = {};
 				handler: function(button, evt) {
 					HelpUsingApp();
 				}
-			},/*{
-				text: "Report Bug / Request Features",
+			},{
+				text: "Report Bugs / Request Features",
 				handler: function(button, evt) {
 					helpBugsFeatures();
 				}
-			},*/{
+			},{
 				text: "About",
 				handler: function(button, evt) {
 					HelpAbout();

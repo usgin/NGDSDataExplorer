@@ -14,7 +14,7 @@ function SetStyle(){
         });
 		      var context = {
                 getNum: function(feature) {
-                    console.log(feature);
+                    //console.log(feature);
                     return feature.features.length;
                 }
             };

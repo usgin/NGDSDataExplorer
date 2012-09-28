@@ -69,7 +69,7 @@ function GetLayers(cap, baseUrl){
 		
 			var r = true;
 			if (hits > 2500)
-				r = confirm("There are "+hits+" "+featureName+" features. They make take awhile to draw. Hit cancel, zoom to a smaller area, then turn on the set extent toggle on the toolbar. Draw anyway?");
+				r = confirm("There are "+hits+" "+featureName+" features. They make take awhile to draw.\n-Hit cancel\n-Zoom to a smaller area\n-Turn on the set extent toggle on the toolbar.\n-Select the layer again.\nOr hit OK to attempt to draw anyway.");
 			if (hits == 0){
 				if (bounds != undefined)
 					alert("There were 0 "+featureName+"s features returned. Try changing the set extent.");
@@ -192,7 +192,22 @@ function GetAttributes(protocol){
 function GetSubregion(featureType) {	
 	// Get the bounds for the feature
 	var featBounds =  new OpenLayers.Bounds(featureType.bounds.left, featureType.bounds.bottom, featureType.bounds.right, featureType.bounds.top);
+	// Transform
+	featBounds = featBounds.transform(wgs84, googleMercator);
+	
+	// Draw orange highlight for bounding box
+/*	var boxLayers;
+	boxLayers = new OpenLayers.Layer.Vector(featureType.name + " Box");
+	var box = new OpenLayers.Feature.Vector(featBounds.toGeometry());
+	boxLayers.addFeatures(box);
+	map.addLayer(boxLayers); */
+	
+	// Outline bounding box in red
+/*	var boxes  = new OpenLayers.Layer.Boxes(featureType.name + " Box");
+	var box = new OpenLayers.Marker.Box(featBounds);
+	boxes.addMarker(box);
+	map.addLayer(boxes); */
 
-	// Transform then zoom to the bounds
-	map.zoomToExtent(featBounds.transform(wgs84, googleMercator));
+	// Zoom to the bounds
+	map.zoomToExtent(featBounds);
 }

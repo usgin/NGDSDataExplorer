@@ -77,26 +77,32 @@ function CreateParams() {
 
 // Create the store for the CSW results
 function CreateCSWStore(cswXML) {
+
+	var xmlDoc;
+	if (window.DOMParser) {
+		var parser = new DOMParser();
+		xmlDoc = parser.parseFromString(cswXML,"text/xml");
+	}
+	else {// Internet Explorer
+		xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
+		xmlDoc.async = false;
+		xmlDoc.loadXML(cswXML); 
+	}
 	
-	var parser = new DOMParser();
-	var doc = parser.parseFromString(cswXML,"application/xml");
-	var xmlObject1 = doc.documentElement;
+	// Get rid of services that aren't web feature services
+	var xmlDocClean = RemoveNonWFS(xmlDoc);
 	
-	var xmlObject = RemoveNonWFS(xmlObject1);
+	// Format the results as CSW records
 	cswFormat = new OpenLayers.Format.CSWGetRecords();
-	cswResults = cswFormat.read(xmlObject);
-	
-	var RecordDef = Ext.data.Record.create([
-		'title', 'abstract'
-	]);
+	cswResults = cswFormat.read(xmlDocClean);
 	
 	// Query the selected catalog service and create the data store
-    store = new Ext.data.Store({
-		proxy: new Ext.data.MemoryProxy(xmlObject1),
-		reader: new Ext.data.XmlReader({
-				record: 'Record'
-					}, RecordDef)
-			
+	 store = new Ext.data.XmlStore({
+		proxy: new Ext.data.MemoryProxy(xmlDoc),
+		record: 'Record',
+		fields: [
+			'title', 'abstract'
+		]
     });
 	store.load();
 	

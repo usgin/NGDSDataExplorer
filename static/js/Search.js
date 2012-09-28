@@ -46,7 +46,7 @@ function Search(){
 	
 		// Create the Catalog Services combo box
 	searchItems.push([{
-		width: 188,
+		width: 193,
 		xtype:          'combo',
 		mode:           'local',
 		value:          'Any Text',
@@ -74,7 +74,7 @@ function Search(){
 	}]);
 	
 	searchItems.push([{
-		width: 188, 
+		width: 193, 
 		fieldLabel: 'Search Term',
 		value: 'Enter Search Term',
         name: 'first',
@@ -92,7 +92,7 @@ function Search(){
 		xtype: 'checkbox',
 		boxLabel: 'Use Current Map Extent',
 		name: 'useVisibleExtent',
-		checked: true,
+		checked: false,
 		listeners: {
 			'check': function(elem) {
 				useVisibleExtent = elem.checked;

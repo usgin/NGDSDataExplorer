@@ -156,7 +156,7 @@ Ext.onReady(function() {
 		id: 'search-panel',
         title: 'Catalog Search',
         region: 'north',
-		width: 200,
+		width: 205,
 		height: 320,
 		autoScroll: true,
 		collapsible: true,
@@ -191,10 +191,12 @@ Ext.onReady(function() {
 			},
 			// When a layer is checked or unchecked
 			checkchange: function(node, e) {
-				if (e == true)
-					LayerChecked(node);
-				else
-					LayerUnchecked(node);
+				if (node.layer.isBaseLayer == false) {
+					if (e == true)
+						LayerChecked(node);
+					else
+						LayerUnchecked(node);
+				}
 			}
 		},
 		tbar: CreateDataServicesToolbar(),
@@ -230,13 +232,14 @@ Ext.onReady(function() {
 			// The West Panel, composed of the Search Panel & the Tree Panel
             region: "west",
             id: 'layout-browser',
-			title: 'NGDS Data Portal',
+			title: 'NGDS Data Portal & Map Viewer',
 			layout: 'border',
+			//layout: 'anchor',
 	        border: false,
 	        split:true,
 			collapsible: true,
 			margins: '2 0 5 5',
-	        width: 200,
+	        width: 205,
 			items: [searchPanel, treePanel]
 		},{
 			// The Legend Panel
@@ -244,7 +247,7 @@ Ext.onReady(function() {
 			region: "east",
 			title: "Legend",
 			margins: '2 0 0 0',
-			width: 200,
+			width: 205,
 			autoScroll: true,
 			padding: 5,
 			collapsed: true,
