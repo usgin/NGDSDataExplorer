@@ -18,7 +18,6 @@ function GetRecordsCSW() {
 				if (resp.status == 200) {				
 					cswXML= resp.responseText;
 					CreateCSWStore(cswXML);
-					CreateGridRef(cswXML);
 				}
 				else if (resp.status == 404){
 					alert("Requested resource not available. Try again later.")
@@ -96,17 +95,12 @@ function CreateCSWStore(cswXML) {
 	var xmlDocClean = RemoveNonWFS(xmlDoc);
 	//console.log(xmlDocClean);
 	
-	// Format the results as CSW records
-	//cswFormat = new OpenLayers.Format.CSWGetRecords();
-	//cswResults = cswFormat.read(xmlDocClean);
-	
-	
 	// Query the selected catalog service and create the data store
 	 store = new Ext.data.XmlStore({
 		proxy: new Ext.data.MemoryProxy(xmlDocClean),
 		record: 'Record',
 		fields: [
-			'title', 'abstract'
+			'title', 'abstract', 'references'
 		]
     });
 	store.load();
@@ -131,27 +125,32 @@ function CreateCSWStore(cswXML) {
 
 // Remove any services that aren't WFS
 function RemoveNonWFS(xmlObject) {
-	
+	// Pull out all the record nodes
 	var records = xmlObject.getElementsByTagName("Record");
 
+	// Examine each record node
 	for (var i = 0; i < records.length; i++) {
+		// Pull out all the reference nodes
 		var references = records[i].getElementsByTagName("references");
 
 		var found = false;
 		
+		// Examine each reference for the record to see if there is a WFS reference
 		for (var j = 0; j < references.length; j++) {
 			var theRef = references[j].firstChild.data;
 			//console.log(theRef);
 			
-			if (found == false) {
-				if (theRef.search("service=WFS") != -1) {
-					found = true;
-					//console.log(theRef);
-				}
+			// If the reference is for a WFS set found to true
+			if (theRef.search("service=WFS") != -1)
+				found = true;
+			// If the reference is not for a WFS delete the reference node
+			else {
+				references[j].parentNode.removeChild(references[j]);
+				j--;
 			}
 		}
 		
-		// If the node didn't have a WFS remove it
+		// If the record node didn't have a WFS remove it
 		if (found == false) {
 			//console.log(i);
 			records[i].parentNode.removeChild(records[i]);
@@ -178,22 +177,6 @@ function SetNumOfResults() {
 		});
 }
 
-// Extracts the base url from the list of urls for the selected data service
-function getUrl(curRefs) {
-	//console.log(curRefs);
-	var t = 0;
-	for (var i = 0; i < curRefs.length; i++) {
-		if (curRefs[i].match("service=WFS"))
-			t = i;
-	}
-	if (t == 0)
-		alert("Requested data service does not offer WFS.");
-	else {
-		var baseUrl = curRefs[t].split('?')[0];
-		GetCapabilities(baseUrl);
-	}
-}
-
 // Remove the namespaces from the XML because Firefox and IE can't parse them 
 // when making the Ext store
 function RemoveNS(xmlString){
@@ -213,28 +196,4 @@ function RemoveNS(xmlString){
 	namespaceRemovedXML = namespaceRemovedXML.replace(namespacePattern, "</");
 
 return namespaceRemovedXML;
-}
-
-// Create the reference to use when a user clicks on an item in the grid
-function CreateGridRef(xmlString) {
-
-	var xmlDoc;
-	if (window.DOMParser) {
-		var parser = new DOMParser();
-		xmlDoc = parser.parseFromString(xmlString,"text/xml");
-	}
-	else {// Internet Explorer
-		xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
-		xmlDoc.async = false;
-		xmlDoc.loadXML(xmlString); 
-	}
-	
-	// Get rid of services that aren't web feature services
-	var xmlDocClean = RemoveNonWFS(xmlDoc);
-	//console.log(xmlDocClean);
-	
-	// Format the results as CSW records
-	cswFormat = new OpenLayers.Format.CSWGetRecords();
-	cswResults = cswFormat.read(xmlDocClean);
-	
 }

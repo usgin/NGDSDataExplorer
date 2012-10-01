@@ -114,12 +114,11 @@ function CreateSearchBBar(){
 			text: 'Add Layer',
 			tooltip: 'Add selected service to layers list',
 			handler: function (){
-				if (cswResults != undefined)
-					if (cswResults.records.length > 0){
-						//console.log(cswResults);
-						getUrl(cswResults.records[curRow].references);
-						}
-				
+				// Get the WFS reference Url for the selected data service
+				var ref = store.data.items[curRow].data.references;
+				// Keep only the base Url
+				var baseUrl = ref.split('?')[0];
+				GetCapabilities(baseUrl);
 			}
 		}]
 	})
