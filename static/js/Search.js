@@ -115,8 +115,10 @@ function CreateSearchBBar(){
 			tooltip: 'Add selected service to layers list',
 			handler: function (){
 				if (cswResults != undefined)
-					if (cswResults.records.length > 0)
+					if (cswResults.records.length > 0){
+						//console.log(cswResults);
 						getUrl(cswResults.records[curRow].references);
+						}
 				
 			}
 		}]

@@ -18,6 +18,7 @@ function GetRecordsCSW() {
 				if (resp.status == 200) {				
 					cswXML= resp.responseText;
 					CreateCSWStore(cswXML);
+					CreateGridRef(cswXML);
 				}
 				else if (resp.status == 404){
 					alert("Requested resource not available. Try again later.")
@@ -77,34 +78,39 @@ function CreateParams() {
 
 // Create the store for the CSW results
 function CreateCSWStore(cswXML) {
+	var cswXMLnoNS = RemoveNS(cswXML);
+	//console.log(cswXMLnoNS);
 
 	var xmlDoc;
 	if (window.DOMParser) {
 		var parser = new DOMParser();
-		xmlDoc = parser.parseFromString(cswXML,"text/xml");
+		xmlDoc = parser.parseFromString(cswXMLnoNS,"text/xml");
 	}
 	else {// Internet Explorer
 		xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
 		xmlDoc.async = false;
-		xmlDoc.loadXML(cswXML); 
+		xmlDoc.loadXML(cswXMLnoNS); 
 	}
 	
 	// Get rid of services that aren't web feature services
 	var xmlDocClean = RemoveNonWFS(xmlDoc);
+	//console.log(xmlDocClean);
 	
 	// Format the results as CSW records
-	cswFormat = new OpenLayers.Format.CSWGetRecords();
-	cswResults = cswFormat.read(xmlDocClean);
+	//cswFormat = new OpenLayers.Format.CSWGetRecords();
+	//cswResults = cswFormat.read(xmlDocClean);
+	
 	
 	// Query the selected catalog service and create the data store
 	 store = new Ext.data.XmlStore({
-		proxy: new Ext.data.MemoryProxy(xmlDoc),
+		proxy: new Ext.data.MemoryProxy(xmlDocClean),
 		record: 'Record',
 		fields: [
 			'title', 'abstract'
 		]
     });
 	store.load();
+	//console.log(store);
 	
 	SetNumOfResults();
 	
@@ -174,6 +180,7 @@ function SetNumOfResults() {
 
 // Extracts the base url from the list of urls for the selected data service
 function getUrl(curRefs) {
+	//console.log(curRefs);
 	var t = 0;
 	for (var i = 0; i < curRefs.length; i++) {
 		if (curRefs[i].match("service=WFS"))
@@ -185,4 +192,49 @@ function getUrl(curRefs) {
 		var baseUrl = curRefs[t].split('?')[0];
 		GetCapabilities(baseUrl);
 	}
+}
+
+// Remove the namespaces from the XML because Firefox and IE can't parse them 
+// when making the Ext store
+function RemoveNS(xmlString){
+	// define the regex pattern to remove the namespaces from the string
+	var xmlnsPattern = new RegExp("xmlns[^\"]*\"[^\"]*\"", "gi");
+
+	// remove the namespaces from the string representation of the XML
+	var namespaceRemovedXML = xmlString.replace(xmlnsPattern, "");
+
+	// Remove the namespaces from each element's opening and closing tag
+	// replace the '<csw:' from '<csw:GetRecordsResponse ... > with '<'
+	var namespacePattern = new RegExp("<[a-z]*:", "gi");
+	namespaceRemovedXML = xmlString.replace(namespacePattern, "<");
+
+	// replace the '</csw:' from '<csw:GetRecordsResponse> with '<'
+	namespacePattern = new RegExp("<\/[a-z]*:", "gi");
+	namespaceRemovedXML = namespaceRemovedXML.replace(namespacePattern, "</");
+
+return namespaceRemovedXML;
+}
+
+// Create the reference to use when a user clicks on an item in the grid
+function CreateGridRef(xmlString) {
+
+	var xmlDoc;
+	if (window.DOMParser) {
+		var parser = new DOMParser();
+		xmlDoc = parser.parseFromString(xmlString,"text/xml");
+	}
+	else {// Internet Explorer
+		xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
+		xmlDoc.async = false;
+		xmlDoc.loadXML(xmlString); 
+	}
+	
+	// Get rid of services that aren't web feature services
+	var xmlDocClean = RemoveNonWFS(xmlDoc);
+	//console.log(xmlDocClean);
+	
+	// Format the results as CSW records
+	cswFormat = new OpenLayers.Format.CSWGetRecords();
+	cswResults = cswFormat.read(xmlDocClean);
+	
 }
