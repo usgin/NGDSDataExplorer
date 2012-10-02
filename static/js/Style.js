@@ -12,12 +12,12 @@ function SetStyle(){
             'default': defaultStyle,
             'select': selectStyle
         });
-		      var context = {
-                getNum: function(feature) {
-                    //console.log(feature);
-                    return feature.features.length;
-                }
-            };
+		
+	var context = {
+		getNum: function(feature) {
+			return feature.features.length;
+		}
+	};
 	
 	style.styles['default'].addRules([
 		new OpenLayers.Rule({
@@ -29,8 +29,6 @@ function SetStyle(){
 			}
         })
 	]);
-  
-	
 	return style;
 }
 

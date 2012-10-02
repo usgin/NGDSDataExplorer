@@ -14,6 +14,7 @@ function CreateStatusbar(){
 	})
 }
 
+// Remove a layer from the layer list
 function RemoveLayer() {
 	// If a layer (activeLayer) has been selected remove it
 	if (activeLayer != undefined) {

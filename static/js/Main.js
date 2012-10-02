@@ -97,6 +97,30 @@ Ext.onReady(function() {
     });
 	emptyStore.loadData(noData);
 
+	   	// The Map Panel
+	var mapPanel = new GeoExt.MapPanel({
+		region: "center",
+		id: "mappanel",
+		title: "Map Viewer",
+		xtype: "gx_mappanel",
+		map: map,
+		layers: [baseLayer, baseLayer2, baseLayer3],
+		// Transform the coordinates to Google Web Mercator to center map on US
+		center: new OpenLayers.LonLat(-98.583, 39.833).transform(wgs84, googleMercator), 
+		zoom: 5,
+		split: true,
+		margins: '2 0 0 0',
+		tbar: CreateToolbar(),
+		items: [{
+			xtype: "gx_zoomslider",
+			vertical: true,
+			height: 100,
+			x: 12,
+			y: 80,
+			plugins: new GeoExt.ZoomSliderTip()
+		}]
+	});	
+	
 	// The form to specify the search parameters
 	var formPanel = new Ext.FormPanel({
 		id: 'form-panel',
@@ -166,7 +190,7 @@ Ext.onReady(function() {
 		items: [formPanel, gridPanel],
 		bbar: CreateSearchBBar()
 	});
-   
+
 	// The Tree Panel
 	var treePanel = new Ext.tree.TreePanel({
 		title: "Layers",
@@ -202,48 +226,26 @@ Ext.onReady(function() {
 		tbar: CreateDataServicesToolbar(),
 		bbar: CreateStatusbar()
 	});
+	
+	// The West Panel, composed of the Search Panel & the Tree Panel
+	var westPanel = new Ext.Panel({
+		region: "west",
+		id: 'layout-browser',
+		title: 'NGDS Data Portal & Map Viewer',
+		layout: 'border',
+		//layout: 'anchor',
+		border: false,
+		split:true,
+		collapsible: true,
+		margins: '2 0 5 5',
+		width: 205,
+		items: [searchPanel, treePanel]
+	});
  
-	// Create the Viewport with a map panel, a search panel, a tree panel and a legend panel
-    var app = new Ext.Viewport({
-        layout: "border",
-        items: [{
-			// The Map Panel
-            region: "center",
-            id: "mappanel",
-            title: "Map Viewer",
-            xtype: "gx_mappanel",
-            map: map,
-			layers: [baseLayer, baseLayer2, baseLayer3],
-			// Transform the coordinates to Google Web Mercator to center map on US
-			center: new OpenLayers.LonLat(-98.583, 39.833).transform(wgs84, googleMercator), 
-			zoom: 5,
-            split: true,
-			margins: '2 0 0 0',
-			tbar: CreateToolbar(),
-			items: [{
-				xtype: "gx_zoomslider",
-				vertical: true,
-				height: 100,
-				x: 12,
-				y: 80,
-				plugins: new GeoExt.ZoomSliderTip()
-			}]
-		}, {	
-			// The West Panel, composed of the Search Panel & the Tree Panel
-            region: "west",
-            id: 'layout-browser',
-			title: 'NGDS Data Portal & Map Viewer',
-			layout: 'border',
-			//layout: 'anchor',
-	        border: false,
-	        split:true,
-			collapsible: true,
-			margins: '2 0 5 5',
-	        width: 205,
-			items: [searchPanel, treePanel]
-		},{
-			// The Legend Panel
+	// The Legend Panel
+	var legendPanel = new GeoExt.LegendPanel({		
 			xtype: "gx_legendpanel",
+			id: "legendPanel",
 			region: "east",
 			title: "Legend",
 			margins: '2 0 0 0',
@@ -252,7 +254,12 @@ Ext.onReady(function() {
 			padding: 5,
 			collapsed: true,
 			collapsible: true
-        }]
+	});
+ 
+	// Create the Viewport with a map panel, a search panel, a tree panel and a legend panel
+    var app = new Ext.Viewport({
+        layout: "border",
+        items: [mapPanel, westPanel, legendPanel]
     });	
  });
 
@@ -319,13 +326,19 @@ function handleMeasurements(event) {
 	if (measure.toFixed(3) != 0.000) {
 		var output  = "Distance = " + measure.toFixed(3) + " " + units;
 		//CreateMeaurementPopup(output);
-		alert("Distance = " + measure.toFixed(3) + " " + units);
+		alert(output);
 		}
 }
 
 // Set checkedLayers and checkedFeatures for checked layer
 // If checked layer is the active layer, set the active features
 function LayerChecked(node) {
+	// If no layers are already checked open the legend panel
+	if (checkedLayers.length == 0) {
+		var lp = Ext.getCmp('legendPanel');
+		lp.expand();
+	}
+
 	// Add the checked layer to the checkedLayers array
 	checkedLayers.push(node.layer);
 	
@@ -358,4 +371,11 @@ function LayerUnchecked(node) {
 			i--;
 		}
 	}
+	
+	// If no layers left checked close the legend panel
+	if (checkedLayers.length == 0) {
+		var lp = Ext.getCmp('legendPanel');
+		lp.collapse();
+	}
+	
 }
