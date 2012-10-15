@@ -1,6 +1,12 @@
-// WFS requests made to the server
+/*************************************************************************************************************************************************
+/	WFS Requests made to the Server
+/	- Get Capabilities
+/ 	- Get Hits
+/ 	- Get Feature
+/ 	- Describe Feature Type
+/************************************************************************************************************************************************/
 
-// Requst the GetCapabilities XML from the server to determine available layers
+// Request the GetCapabilities XML from the server to get a list of available features
 function GetCapabilities(baseUrl){
 	
 	// If the select box toggle is pressed, undepress it
@@ -72,7 +78,7 @@ function GetLayers(cap, baseUrl){
 				r = confirm("There are "+hits+" "+featureName+" features. They make take awhile to draw.\n-Hit cancel\n-Zoom to a smaller area\n-Turn on the set extent toggle on the toolbar.\n-Select the layer again.\nOr hit OK to attempt to draw anyway.");
 			if (hits == 0){
 				if (bounds != undefined)
-					alert("There were 0 "+featureName+"s features returned. Try changing the set extent.");
+					alert("There were 0 "+featureName+"s features returned. Try changing the set extent or turn off the set extent toggle on the toolbar.");
 				else
 					alert("There were 0 "+featureName+"s features returned. There may be a problem with the server.");
 				r = false;
@@ -189,6 +195,7 @@ function GetAttributes(protocol){
 	});
 }
 
+// Zoom to the bounds of the feature
 function GetSubregion(featureType) {	
 	// Get the bounds for the feature
 	var featBounds =  new OpenLayers.Bounds(featureType.bounds.left, featureType.bounds.bottom, featureType.bounds.right, featureType.bounds.top);

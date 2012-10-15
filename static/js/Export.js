@@ -1,3 +1,9 @@
+/*************************************************************************************************************************************************
+/	Export to Table or CSV
+/	- Create an html table
+	- Create a csv file
+/************************************************************************************************************************************************/
+
 // Create a html table in a new window for the feature data with the feature attributes as the headings
 function ExportToHTMLTable() {
 	//console.log(activeLayer);

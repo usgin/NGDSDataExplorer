@@ -1,3 +1,20 @@
+/*************************************************************************************************************************************************
+/	NGDS Data Portal & Map Viewer
+/ 
+/ 	The National Geothermal Data System (NGDS) Data Portal & Map Viewer is a lightweight, open-source, publicly-accessible web mapping
+/	application which facilitates the discovery of geothermal features without the need to switch between multiple interfaces. An
+/	integrated search of the USGIN AASG Geothermal Data Catalog will list relevant feature services available for attribute querying
+/	and display on a map. The search can be limited to a specific geographical extent for further refinement. Once added to the map,
+/	attributes for features can either be shown in a feature popup or a table. Users can select features in data from different services
+/	for display in a single table. The (NGDS) Data Portal & Map Viewer is primarily for geologists and other researchers needing a quick
+/	and easy way to retrieve information about US geothermal features without the need for software beyond a web browser or the knowledge
+/	of who hosts which services.
+/	To be hosted at http://data.geothermaldatasystem.org/
+/	Developed by Jessica Good Alisdairi at the Arizona Geological Service
+/ 	
+/	Utilizes OpenLayers v2.12-rc7, GeoExt v1.1 and ExtJs v3.4
+/************************************************************************************************************************************************/
+
 // Global Variables
 var map;					// The map
 var wfsLayers = [];  		// Array of WFS Layers
@@ -12,19 +29,17 @@ var layerAttributes;		// The attributes of the layer
 var selectCtrl; 			// Control for the selection of individual features
 var selectBoxCtrl;			// Control for the selection of mulitple features by drawing a box
 var selectBox = false;		// The 'select box' is not initially pressed
-var searchCatService;
-var searchField = "AnyText";
-var searchTerm = "";
-var gridPanel;
-var store;
+var searchField = "AnyText";// The field being searched in the catalog
+var searchTerm = "";		// The term being searched for in the catalog
+var gridPanel;				// The grid panel to display the results of the catalog search
+var store;					// The store to hold the results of the catalog search
 var curRow = 0;				// Currently selected row in the csw grid
-var cswResults;
 var checkedLayers = [];		// Array of layers that are currently checked in the layer tree
 var checkedFeatures = []; 	// Selected features in the checked layers
-var useVisibleExtent = true;
-var bounds;
-var measureCtrl;
-var hits;
+var useVisibleExtent;		// Boolean for whether Use Current Map Extent for the search is checked or not
+var bounds;					// The bounds of the map
+var measureCtrl;			// Control for the distance measurement tool
+var hits;					// Number of features in the data service layer being requested
 
 // Projections
 var wgs84 = new OpenLayers.Projection("EPSG:4326");
@@ -97,7 +112,7 @@ Ext.onReady(function() {
     });
 	emptyStore.loadData(noData);
 
-	   	// The Map Panel
+	// The Map Panel
 	var mapPanel = new GeoExt.MapPanel({
 		region: "center",
 		id: "mappanel",
@@ -128,15 +143,8 @@ Ext.onReady(function() {
 		height: 135,
 		title: 'USGIN AASG Geothermal Data',
 		hideLabels: true,
-		items: [Search()],
-		buttons: [{ 
-			text: 'Search', 
-			listeners: {
-				click: function(node,e){
-					DoSearch();
-				}
-			}
-		}]
+		items: [SearchForm()],
+		buttons: [SearchButton()]
 	});
 
 	// The grid which will contain the results of the csw search
@@ -155,6 +163,10 @@ Ext.onReady(function() {
 			// Set curRow to the clicked row
 			rowclick: function (grid, row, e) {
 				curRow = row;
+			},
+			rowdblclick: function (grid, row, e) {
+				curRow = row;
+				GetDataServices();
 			},
 			// Show a qtip for each row on mouseover which displays the title and abstract for the record
 			mouseover: function(e, cell) {
@@ -191,8 +203,8 @@ Ext.onReady(function() {
 		bbar: CreateSearchBBar()
 	});
 
-	// The Tree Panel
-	var treePanel = new Ext.tree.TreePanel({
+	// The Layers Panel
+	var layersPanel = new Ext.tree.TreePanel({
 		title: "Layers",
 		region:'center',
 		xtype: "treepanel",
@@ -239,7 +251,7 @@ Ext.onReady(function() {
 		collapsible: true,
 		margins: '2 0 5 5',
 		width: 205,
-		items: [searchPanel, treePanel]
+		items: [searchPanel, layersPanel]
 	});
  
 	// The Legend Panel
@@ -262,13 +274,6 @@ Ext.onReady(function() {
         items: [mapPanel, westPanel, legendPanel]
     });	
  });
-
-// Set the map extent
-function SetMapExtent() {
-	map.getExtent();
-	var curBounds = map.getExtent();
-	bounds = curBounds.transform(googleMercator, wgs84);
- }
  
 // Check if the object is in the array
 function IsIn(arr, obj){
@@ -276,106 +281,4 @@ function IsIn(arr, obj){
 		if (arr[i] == obj) 
 			return true;
 	}
-}
-
-// Create the control for the measurement tool
-function CreateMeasurementCtrl() {
-	var sketchSymbolizers = {
-		"Point": {
-			pointRadius: 4,
-			graphicName: "square",
-			fillColor: "white",
-			fillOpacity: 1,
-			strokeWidth: 1,
-			strokeOpacity: 1,
-			strokeColor: "#333333"
-		},
-		"Line": {
-			strokeWidth: 3,
-			strokeOpacity: 1,
-			strokeColor: "#666666",
-			strokeDashstyle: "dash"
-		}
-	};
-	var style = new OpenLayers.Style();
-	style.addRules([
-		new OpenLayers.Rule({symbolizer: sketchSymbolizers})
-	]);
-	var styleMap = new OpenLayers.StyleMap({"default": style})
-
-	measureCtrl = new OpenLayers.Control.Measure(
-		OpenLayers.Handler.Path, {
-			persist: true,
-			handlerOptions: {
-				layerOptions: {styleMap: styleMap}
-			}
-		}
-	);
-	
-	measureCtrl.events.on({
-		"measure": handleMeasurements,
-		//"measurepartial": handleMeasurements
-	});
-	map.addControl(measureCtrl);
-}
-
-function handleMeasurements(event) {
-	var geometry = event.geometry;
-	var units = event.units;
-	var measure = event.measure;
-	if (measure.toFixed(3) != 0.000) {
-		var output  = "Distance = " + measure.toFixed(3) + " " + units;
-		//CreateMeaurementPopup(output);
-		alert(output);
-		}
-}
-
-// Set checkedLayers and checkedFeatures for checked layer
-// If checked layer is the active layer, set the active features
-function LayerChecked(node) {
-	// If no layers are already checked open the legend panel
-	if (checkedLayers.length == 0) {
-		var lp = Ext.getCmp('legendPanel');
-		lp.expand();
-	}
-
-	// Add the checked layer to the checkedLayers array
-	checkedLayers.push(node.layer);
-	
-	// Add the selected features on the checked layer to the checkedFeatures array
-	for (var i=0; i < selFeatures.length; i++) {
-		if (selFeatures[i].layer.name == node.layer.name)
-			checkedFeatures.push(selFeatures[i]);
-	}
-	
-	// If no active layer has been set yet, set the checked layer as the active layer
-	if (activeLayer == undefined) {
-		node.select();
-		SetActive(node);
-	}
-	
-	// If the checked layer is the same as the active layer set the active features
-	if (activeLayer != undefined) {
-		if (node.layer.name == activeLayer.name)	
-			SetActive(node);
-	}
-}
-
-// If a layer has been unchecked, remove that layer from checkedLayers and
-// remove that layer's selected features from checkedFeatures
-function LayerUnchecked(node) {
-	checkedLayers.splice(checkedLayers.indexOf(node.layer), 1);
-	for (var i=0; i < checkedFeatures.length; i++) {
-		if (checkedFeatures[i].layer.name == node.layer.name) {
-			checkedFeatures.splice(i, 1);
-			i--;
-		}
-	}
-	
-	// If no layers left checked close the legend panel
-	if (checkedLayers.length == 0) {
-		var lp = Ext.getCmp('legendPanel');
-		lp.collapse();
-	}
-	
 }

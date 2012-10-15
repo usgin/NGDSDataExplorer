@@ -1,219 +1,20 @@
-// Create two toolbars
-// 1. The Map Panel Toolbar
-// 2. The Data Services Toolbar
+/*************************************************************************************************************************************************
+/	Layers Panel
+/	Create the components that make up the Layers Panel:
+/		- Quick-Pick Data Services combo box
+/		- Base Url input box
+/		- Layer tree (see Main.js)
+/		- Status display
+/		- Remove Layer button
+/************************************************************************************************************************************************/
 
-// Create the toolbar above the map with various actions
-function CreateToolbar() {
-var ctrl, action, toolbarItems = [], actions = {};
-
-   // ZoomToMaxExtent
-    action = new GeoExt.Action({
-        control: new OpenLayers.Control.ZoomToMaxExtent(),
-        map: map,
-        text: "max extent",
-        tooltip: "Zoom to max extent."
-    });
-    actions["max_extent"] = action;
-    toolbarItems.push(action);
-    toolbarItems.push("-");
-	
-	// Zoom to active layer						   
-    action = new GeoExt.Action({
-		//control: ZoomActiveLayer(),
-		handler: function () {
-			if (activeLayer != undefined)
-				map.zoomToExtent(activeLayer.getDataExtent());	
-			else
-				alert("Select an active layer.");
-		},
-        map: map,
-		disabled: false,
-        text: "zoom layer",
-        tooltip: "Zoom to highlighted layer."
-    });
-    actions["zoom_layer"] = action;
-    toolbarItems.push(action);
-    toolbarItems.push("-");
-	
-	// Navigation history
-    ctrl = new OpenLayers.Control.NavigationHistory();
-    map.addControl(ctrl);
-
-    action = new GeoExt.Action({
-        text: "previous",
-        control: ctrl.previous,
-        disabled: true,
-        tooltip: "Previous in view history."
-    });
-    actions["previous"] = action;
-    toolbarItems.push(action);
-
-    action = new GeoExt.Action({
-        text: "next",
-        control: ctrl.next,
-        disabled: true,
-        tooltip: "Next in view history."
-    });
-    actions["next"] = action;
-    toolbarItems.push(action);
-	toolbarItems.push("-");
-	
-	// Set the map extent
-	action = new Ext.Action({ 
-		id: "setExtentBtn",
-        text: "set extent",
-        tooltip: "Only new features within the extent will be added to the map.",
-        map: map,
-		hidden: false,
-		enableToggle: true, 
-		toggleHandler: function(button, state) {
-			if (state == true) 
-				SetMapExtent();
-			else
-				bounds = undefined;
-		}
-    });
-    actions["setExtent"] = action;
-    toolbarItems.push(action);
-    toolbarItems.push("-");	
-
-	// Button to allow for selection of mulitple features by drawing a box     
-	action = new Ext.Action({ 
-        text: "select box",
-        tooltip: "Draw a box to select multiple features.",
-		id: "select_box",
-		enableToggle: true, 
-		toggleHandler: function(button, state) {
-			// If select control hasn't been defined yet (no layers added) don't allow toggle to stay depressed
-			// otherwise activate the selectBoxCtrl and deactivate the selectCtrl if the toggle is depressed
-			if (selectCtrl == undefined) {
-				this.toggle(false);
-			}
-			else{
-				if (state == true){
-					selectCtrl.deactivate();
-					selectBoxCtrl.activate();
-					selectBox = true;
-				}
-				else {
-					selectBoxCtrl.deactivate();
-					selectCtrl.activate();
-					selectBox = false;
-				}
-			}
-		}
-    });
-    actions["select_box"] = action;
-    toolbarItems.push(action);
-    toolbarItems.push("-");	
-
-	// Button to clear all selected features
-	action = new GeoExt.Action({ 
-        text: "clear selected",
-        tooltip: "Clear all selected features.",
-        map: map,		
-		handler: function(item, pressed) {
-			if (selectCtrl != undefined) {
-				selectCtrl.unselectAll();	
-				selFeatures = [];
-				if (activeLayer != undefined)
-					activeFeatures = activeLayer.features;
-			}
-		}
-    });
-    actions["clear_selected"] = action;
-    toolbarItems.push(action);
-    toolbarItems.push("-");
-	
-	// Button to turn on/off popups       
-	action = new Ext.Action({ 
-        text: "show popups",
-        tooltip: "Show popups with feature data.",
-		enableToggle: true, 
-		toggleHandler: function(button, state) {
-			if (state == true)
-				showPopups = true;
-			else {
-				showPopups = false;
-				
-				//get all existing popups
-				var popups = Ext.WindowMgr.getBy(function(win){return (win instanceof GeoExt.Popup)});
-
-				//kill all existing popups
-				for (var i =0; i < popups.length; i++)
-					popups[i].destroy();
-			}
-		}
-    });
-    actions["show_popups"] = action;
-    toolbarItems.push(action);
-    toolbarItems.push("-");	
-	
-	// Measure a distance
-	action = new Ext.Action({ 
-        text: "measure",
-        tooltip: "Measure a distance.",
-        enableToggle: true, 
-		toggleHandler: function(button, state) {
-			if (state == true) 
-				measureCtrl.activate();
-			else
-				measureCtrl.deactivate();
-		}
-    });
-    actions["measure"] = action;
-    toolbarItems.push(action);
-	toolbarItems.push("-");	
-	  
-	// Create an html table
-	action = new GeoExt.Action({ 
-        text: "create table",
-        tooltip: "Create html table of selected features from checked layer. If more than one layer is checked use column headers of highlighted layer.",
-        map: map,
-		handler: function(item, pressed) {
-			ExportToHTMLTable();		
-			}
-    });
-    actions["create_html"] = action;
-    toolbarItems.push(action);
-	// toolbarItems.push("-");	
-
-    toolbarItems.push("->");	
-	
-	// Help drop-down menu
-	action = new GeoExt.Action({
-        text: "Help",
-        tooltip: "Help",
-		menu: new Ext.menu.Menu({
-			items: [{
-				text: "Using this application",
-				handler: function(button, evt) {
-					HelpUsingApp();
-				}
-			},{
-				text: "Report Bugs / Request Features",
-				handler: function(button, evt) {
-					helpBugsFeatures();
-				}
-			},{
-				text: "About",
-				handler: function(button, evt) {
-					HelpAbout();
-				}
-			}]
-		})
-    });
-	actions["Help"] = action;
-    toolbarItems.push(action);
-	
-	return toolbarItems;
-}
-
-// Create the toolbar for the data services combo box and the base url input box
+// Create the top toolbar consisting of:
+// 	- The Quick-Pick Data Services combo box
+//	- Base Url input box
 function CreateDataServicesToolbar(){
 	var dataServicesToolbar = [];
 	
-	// Create the Data Services combo box
+	// Create the Quick-Pick Data Services combo box
 	dataServicesToolbar.push([{
 		width:			175, 
 		//width:        194,  // Width without the Url button
@@ -280,7 +81,7 @@ function CreateDataServicesToolbar(){
 		}
 	}]);
 	
-	// Create a button with a text field for a user inputed base url
+	// Create a button to open the Base Url input box
 	dataServicesToolbar.push([{
 		text: "Url",
 	    //icon: '../lib/ext-3.4.0/examples/menu/list-items.gif',
@@ -307,4 +108,83 @@ function CreateDataServicesToolbar(){
 	}]);
 	
 	return dataServicesToolbar;
+}
+
+// Create the statusbar for displaying Ready or Loading & the Remove Layer button
+function CreateStatusbar(){
+	return new Ext.ux.StatusBar({
+		id: 'basic-statusbar',
+		text: 'Ready',
+		iconCls: 'x-status-valid',
+		items: [{
+			text: 'Remove Layer',
+			tooltip: 'Remove highlighted layer from layers list.',
+			handler: function (){
+				RemoveLayer();
+			}
+		}]
+	})
+}
+
+// Remove a layer from the layer list
+function RemoveLayer() {
+	// If a layer (activeLayer) has been selected remove it
+	if (activeLayer != undefined) {
+		//console.log(checkedLayers);
+		//console.log(checkedFeatures);
+		
+		// Remove activeLayer from checkedLayers array
+		checkedLayers.splice(checkedLayers.indexOf(activeLayer), 1);
+		
+		// Remove features in activeLayer from checkedFeatures array
+		for (var i=0; i < checkedFeatures.length; i++) {
+			if (checkedFeatures[i].layer.name == activeLayer.name) {
+				checkedFeatures.splice(i, 1);
+				i--;
+			}
+		}
+		//console.log(checkedLayers);
+		//console.log(checkedFeatures);
+		
+		// Remove features in activeLayer from selFeatures array
+		for (var i=0; i < selFeatures.length; i++) {
+			if (selFeatures[i].layer.name == activeLayer.name) {
+				selFeatures.splice(i, 1);
+				i--;
+			}
+		}		
+		
+		// Remove all features from activeLayer
+		activeLayer.removeAllFeatures();
+		
+		// Remove activeLayer
+		map.removeLayer(activeLayer);
+		
+		// activeLayer is now undefined
+		activeLayer = undefined;
+	}
+	else {
+		// If the basemap is the only layer
+		if (map.getNumLayers() == 1)
+			alert("Add a layer first.");
+		else
+			alert("Select a layer to remove.");
+	}
+}
+
+// Set cursor to wait and statusbar to loading
+function Busy() {
+	document.body.style.cursor = 'wait';
+	var sb = Ext.getCmp('basic-statusbar');
+	sb.showBusy();
+}
+
+// Set cursor to default and statusbar to ready
+function Ready() {
+	document.body.style.cursor = 'default';
+	var sb = Ext.getCmp('basic-statusbar');
+	sb.setStatus({
+		text: 'Ready',
+		iconCls: 'x-status-valid'
+	});
 }

@@ -1,7 +1,10 @@
-// Retreive data services from the CSW
+/*************************************************************************************************************************************************
+/	Make a request to the AASG Geothermal Data Catalog with the inputed search parameters
+/ 	Format the results
+/************************************************************************************************************************************************/
 
 // Request records from the CSW service
-function GetRecordsCSW() {
+function GetRecordsCSW(cswUrl) {
 	var cswXML;
 	var cswFormat;
 	
@@ -9,7 +12,7 @@ function GetRecordsCSW() {
 	
 	try {
 		OpenLayers.Request.GET({
-			url: searchCatService,
+			url: cswUrl,
 			async: false,
 			params: CreateParams(),
 			callback: function(resp){

@@ -1,22 +1,22 @@
-// Items in the drop-down help menu on the Map Panel Toolbar
+/*************************************************************************************************************************************************
+/	Catalog Search Panel
+/	Create the components that make up the Catalog Search Panel:
+/		- Search field drop-down box
+/		- Search term text box
+/		- Use Current Extent Checkbox
+/		- Search button
+/		- Results grid (see Main.js)
+/		- Number of Results
+/		- Add Layer button
+/************************************************************************************************************************************************/
 
-function DoSearch() {
-	if (searchTerm == "")
-		alert("Enter a search term.");
-	else {
-		if (searchCatService == undefined)
-			searchCatService = 'http://catalog.stategeothermaldata.org/geoportal/csw?';
-
-		GetRecordsCSW();
-	}
-}
-
-// Help Menu Item - Help using this application
-function Search(){
+// Create the form to specify the search parameters
+function SearchForm(){
 	var searchItems = [];
 	
-	// Create the Catalog Services combo box
-/*	searchItems.push([{
+	// Create the Catalog Services drop-down menu
+	// Defaults to 'http://catalog.stategeothermaldata.org/geoportal/csw?'
+	/*searchItems.push([{
 		width: 			188,
 		xtype:          'combo',
 		mode:           'local',
@@ -44,7 +44,8 @@ function Search(){
 		}
 	}]);*/
 	
-		// Create the Catalog Services combo box
+	// Create the search field selection drop-down box
+	// Defaults to 'Any Text'
 	searchItems.push([{
 		width: 193,
 		xtype:          'combo',
@@ -73,6 +74,8 @@ function Search(){
 		}
 	}]);
 	
+	// Create the search term input text box
+	// Input required by user for search
 	searchItems.push([{
 		width: 193, 
 		fieldLabel: 'Search Term',
@@ -88,6 +91,8 @@ function Search(){
 		}
 	}]);
 
+	// Create the Use Current Map Extent checkbox
+	// Defaults to faults
 	searchItems.push([{
 		xtype: 'checkbox',
 		boxLabel: 'Use Current Map Extent',
@@ -103,6 +108,31 @@ function Search(){
 	return searchItems;
 }
 
+// Create the button to start the search
+function SearchButton () {
+	return { 
+		text: 'Search', 
+		listeners: {
+			click: function(node,e){
+				DoSearch();
+			}
+		}
+	};
+}
+
+// Perform the search by calling GetRecordsCSW
+function DoSearch() {
+	if (searchTerm == "")
+		alert("Enter a search term.");
+	else {
+		var cswUrl = 'http://catalog.stategeothermaldata.org/geoportal/csw?'
+		GetRecordsCSW(cswUrl);
+	}
+}
+
+// Create the bottom bar containing:
+//  - A display for the number of records returned
+//  - A button to add the selected layer to the layer list
 function CreateSearchBBar(){
 	return new Ext.ux.StatusBar({
 		id: 'search-statusbar',
@@ -110,16 +140,24 @@ function CreateSearchBBar(){
 		// Initial State
 		text: "0 results",
 	 
+		// Button to add the selected layer to the layer list
 		items: [{
 			text: 'Add Layer',
 			tooltip: 'Add selected service to layers list',
-			handler: function (){
-				// Get the WFS reference Url for the selected data service
-				var ref = store.data.items[curRow].data.references;
-				// Keep only the base Url
-				var baseUrl = ref.split('?')[0];
-				GetCapabilities(baseUrl);
+			handler: function () {
+				GetDataServices()
 			}
+		/*	handler: function (){
+
+			}*/
 		}]
 	})
+}
+
+function GetDataServices() {
+	// Get the WFS reference Url for the selected data service
+	var ref = store.data.items[curRow].data.references;
+	// Keep only the base Url
+	var baseUrl = ref.split('?')[0];
+	GetCapabilities(baseUrl);
 }
