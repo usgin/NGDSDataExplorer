@@ -13,7 +13,6 @@
 /		- help (see Help.js)
 /************************************************************************************************************************************************/
 
-
 // Create the toolbar above the map with various actions
 function CreateToolbar() {
 var ctrl, action, toolbarItems = [], actions = {};

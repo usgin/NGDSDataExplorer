@@ -95,8 +95,11 @@ function GetLayers(cap, baseUrl){
 						featureNS: featureNS,
 						geometryName: "shape"
 					}),
+					events: new OpenLayers.Events({
+						beforefeatureadded: Busy()
+					}),
 					styleMap: SetStyle(),
-					visibility: false
+					visibility: true
 				});
 				//console.log(bounds);
 				if (bounds != undefined) {

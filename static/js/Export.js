@@ -29,7 +29,7 @@ function ExportToHTMLTable() {
 				if (IsIn(checkedLayers, activeLayer) == true) {
 					// If the feature types of the checked layers do NOT match
 					if (MatchingFeatureTypes() == false) {
-						if (confirm("Warnings:\n -The feature types do not match.\n -"+ activeLayer.name + " is selected for the column headings.\n\n Continue anyway?") == true) {
+						if (confirm("Warning! Feature type MISMATCH!\nColumn headings will be taken from: "+ activeLayer.name + "\n\n Continue anyway?") == true) {
 							theHTML = WriteHeaders(activeLayer);
 							WriteTable(theHTML);
 						}
@@ -43,13 +43,13 @@ function ExportToHTMLTable() {
 				// If the active (highlighted) layer is NOT one of the checked layers
 				else {
 					if (MatchingFeatureTypes() == false) {
-						if (confirm("Warnings:\n -The feature types do not match.\n -"+ activeLayer.name + " is selected for the column headings.\n\n Continue anyway?") == true) {
+						if (confirm("Warning! Feature type MISMATCH!\nColumn headings will be taken from: "+ activeLayer.name + "\n\n Continue anyway?") == true) {
 							theHTML = WriteHeaders(activeLayer);
 							WriteTable(theHTML);
 						}
 					}
 					else {
-						if (confirm("Warning:\n -"+ activeLayer.name + " is selected for the column headings.\n\n Continue anyway?") == true) {
+						if (confirm("Warning!\nColumn headings will be taken from: "+ activeLayer.name + "\n\n Continue anyway?") == true) {
 							theHTML = WriteHeaders(activeLayer);
 							WriteTable(theHTML);
 						}

@@ -148,7 +148,7 @@ function SetActive(node){
 // add any selected featues on this layer to checkedFeatures
 // If checked layer is the active layer, add selected features to activeFeatures
 function LayerChecked(node) {
-	// If no layers are already checked open the legend panel
+	// If no layers are already checked, open the legend panel
 	if (checkedLayers.length == 0) {
 		var lp = Ext.getCmp('legendPanel');
 		lp.expand();
@@ -162,12 +162,12 @@ function LayerChecked(node) {
 		if (selFeatures[i].layer.name == node.layer.name)
 			checkedFeatures.push(selFeatures[i]);
 	}
-	
+	 
 	// If no active layer has been set yet, set the checked layer as the active layer
-	if (activeLayer == undefined) {
+	/*if (activeLayer == undefined) {
 		node.select();
 		SetActive(node);
-	}
+	}	*/
 	
 	// If the checked layer is the same as the active layer set the active features
 	if (activeLayer != undefined) {

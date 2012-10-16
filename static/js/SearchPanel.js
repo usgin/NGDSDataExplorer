@@ -55,7 +55,7 @@ function SearchForm(){
 		forceSelection: false,
 		editable:       false,       
 		//labelWidth: 	0,		
-		//fieldLabel:     'Title',
+		//fieldLabel:    'Title',
 		name:           'title',
 		displayField:   'name',
 		valueField: 	'value',

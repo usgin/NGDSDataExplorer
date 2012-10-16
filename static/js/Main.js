@@ -221,6 +221,10 @@ Ext.onReady(function() {
 			expanded: true
 		}),
 		listeners: {
+			insert: function(tree, parent, node, refNode) {
+				if (node.layer.isBaseLayer == false)
+					LayerChecked(node);
+			},
 			// When a layer is clicked
 			click: function(node, e) {
 				SetActive(node);
