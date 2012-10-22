@@ -16,7 +16,7 @@ function GetCapabilities(baseUrl){
 	}
 	
 	// Get the WFS Capabilities from the server
-	try{
+	try {
 		Busy();
 		OpenLayers.Request.GET({
 			url: baseUrl+'?SERVICE=WFS&version=1.1.0&REQUEST=GetCapabilities&namespace=wfs',
@@ -49,7 +49,7 @@ function GetCapabilities(baseUrl){
 			}
 		})
 	}
-	catch (e){
+	catch (e) {
 		Ready();
 	}	
 }

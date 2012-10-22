@@ -10,6 +10,7 @@
 /		- show popups
 /		- measure
 /		- create table (see Export.js)
+/		- create csv (see Export.js)
 /		- help (see Help.js)
 /************************************************************************************************************************************************/
 
@@ -178,29 +179,31 @@ var ctrl, action, toolbarItems = [], actions = {};
 	toolbarItems.push("-");	
 	  
 	// Create an html table
-	action = new GeoExt.Action({ 
+	action = new Ext.Button({ 
         text: "create table",
         tooltip: "Create html table of selected features from checked layer. If more than one layer is checked use column headers of highlighted layer.",
         map: map,
 		handler: function(item, pressed) {
-			ExportToHTMLTable();		
-			}
+			ExportData("html");		
+		}
     });
     actions["create_html"] = action;
     toolbarItems.push(action);
-	/*toolbarItems.push("-");	
+	toolbarItems.push("-");	
 	
 	// Create csv file
-	action = new GeoExt.Action({ 
+	action = new Ext.Button({ 
         text: "create csv",
         tooltip: "Create a csv file of selected features from checked layer. If more than one layer is checked use column headers of highlighted layer.",
         map: map,
 		handler: function(item, pressed) {
-			CreateCSV();		
-			}
+			var madeFile = ExportData("csv");
+			if (madeFile == true)
+				window.open('/files/data.csv', '_blank');			
+		}
     });
     actions["create_html"] = action;
-    toolbarItems.push(action);*/
+    toolbarItems.push(action);
 	// toolbarItems.push("-");
 
     toolbarItems.push("->");	

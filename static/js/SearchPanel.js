@@ -147,17 +147,16 @@ function CreateSearchBBar(){
 			handler: function () {
 				GetDataServices()
 			}
-		/*	handler: function (){
-
-			}*/
 		}]
 	})
 }
 
 function GetDataServices() {
-	// Get the WFS reference Url for the selected data service
-	var ref = store.data.items[curRow].data.references;
-	// Keep only the base Url
-	var baseUrl = ref.split('?')[0];
-	GetCapabilities(baseUrl);
+	if (store != undefined) {
+		// Get the WFS reference Url for the selected data service
+		var ref = store.data.items[curRow].data.references;
+		// Keep only the base Url
+		var baseUrl = ref.split('?')[0];
+		GetCapabilities(baseUrl);
+	}
 }

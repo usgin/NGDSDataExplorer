@@ -58,7 +58,7 @@ function HelpAbout(){
 		items: [{
 			xtype: 'panel',
 			autoScroll: true,
-			html: 'Version 1.0 (September 2012) <br><br> This program was created by Jessica Good Alisdairi for the Arizona Geological Survey (AZGS), the US Geoscience Information Network (USGIN) and the National Geothermal Data System (NGDS).<br><br>  This program uses OpenLayers, GeoExt and ExtJs.<br> <a href="http://openlayers.org/">OpenLayers</a><br> <a href="http://http://geoext.org/">GeoExt</a><br> <a href="http://dev.sencha.com/deploy/ext-3.4.0/">Ext JS</a>'
+			html: 'This program was created by Jessica Good Alisdairi for the Arizona Geological Survey (AZGS), the US Geoscience Information Network (USGIN) and the National Geothermal Data System (NGDS).<br><br>  This program uses OpenLayers, GeoExt and ExtJs.<br> <a href="http://openlayers.org/">OpenLayers</a><br> <a href="http://http://geoext.org/">GeoExt</a><br> <a href="http://dev.sencha.com/deploy/ext-3.4.0/">Ext JS</a>'
 			}
 		]
 	}).show();	
