@@ -13,7 +13,7 @@ app.set 'view engine', 'jade'
 app.set 'view options', layout: false
 app.use '/static', express.static './static'
 
-# Search Intereface
+# Search Interface
 app.get '/', (req, res) ->
  res.render 'index'
 
