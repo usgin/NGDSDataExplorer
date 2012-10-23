@@ -80,8 +80,10 @@ var ctrl, action, toolbarItems = [], actions = {};
 		hidden: false,
 		enableToggle: true, 
 		toggleHandler: function(button, state) {
-			if (state == true) 
+			if (state == true) {
 				SetMapExtent();
+				
+			}
 			else
 				bounds = undefined;
 		}
