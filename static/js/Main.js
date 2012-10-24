@@ -1,12 +1,12 @@
 /*************************************************************************************************************************************************
-/	NGDS Data Portal & Map Viewer
+/	NGDS Search & Map View
 / 
-/ 	The National Geothermal Data System (NGDS) Data Portal & Map Viewer is a lightweight, open-source, publicly-accessible web mapping
+/ 	The National Geothermal Data System (NGDS) Search & Map View is a lightweight, open-source, publicly-accessible web mapping
 /	application which facilitates the discovery of geothermal features without the need to switch between multiple interfaces. An
 /	integrated search of the USGIN AASG Geothermal Data Catalog will list relevant feature services available for attribute querying
 /	and display on a map. The search can be limited to a specific geographical extent for further refinement. Once added to the map,
 /	attributes for features can either be shown in a feature popup or a table. Users can select features in data from different services
-/	for display in a single table. The (NGDS) Data Portal & Map Viewer is primarily for geologists and other researchers needing a quick
+/	for display in a single table. The (NGDS) Search & Map View is primarily for geologists and other researchers needing a quick
 /	and easy way to retrieve information about US geothermal features without the need for software beyond a web browser or the knowledge
 /	of who hosts which services.
 /	To be hosted at http://data.geothermaldatasystem.org/
@@ -144,7 +144,14 @@ Ext.onReady(function() {
 		title: 'USGIN AASG Geothermal Data',
 		hideLabels: true,
 		items: [SearchForm()],
-		buttons: [SearchButton()]
+		buttons: [SearchButton()],
+		    keys: [
+            { key: [Ext.EventObject.ENTER], handler: function() {
+                    DoSearch();
+                }
+            }
+        ]
+
 	});
 
 	// The grid which will contain the results of the csw search
@@ -192,7 +199,7 @@ Ext.onReady(function() {
 		id: 'search-panel',
         title: 'Catalog Search',
         region: 'north',
-		width: 205,
+		width: 200,
 		height: 320,
 		autoScroll: true,
 		collapsible: true,
@@ -247,14 +254,14 @@ Ext.onReady(function() {
 	var westPanel = new Ext.Panel({
 		region: "west",
 		id: 'layout-browser',
-		title: 'NGDS Data Portal & Map Viewer',
+		title: 'NGDS Search & Map View',
 		layout: 'border',
 		//layout: 'anchor',
 		border: false,
 		split:true,
 		collapsible: true,
 		margins: '2 0 5 5',
-		width: 205,
+		width: 200,
 		items: [searchPanel, layersPanel]
 	});
  
@@ -265,7 +272,7 @@ Ext.onReady(function() {
 			region: "east",
 			title: "Legend",
 			margins: '2 0 0 0',
-			width: 205,
+			width: 200,
 			autoScroll: true,
 			padding: 5,
 			collapsed: true,

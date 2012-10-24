@@ -84,9 +84,10 @@ function SearchForm(){
 		xtype: 'textfield',
 		selectOnFocus: true,
         allowBlank:false,
+		enableKeyEvents: true,
 		listeners: {
-			'change': function(elem,evnt) {
-				searchTerm = evnt;
+			'keyup': function(evt, e) {
+				searchTerm = evt.el.dom.value;
 			}
 		}
 	}]);
