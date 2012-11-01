@@ -16,7 +16,7 @@ function SearchForm(){
 	
 	// State the catalog being searched
 	searchItems.push([{
-		width: 193, 
+		width: 188, 
 		xtype: 'label',
 		fieldLabel: 'catalog',
 		text: 'USGIN AASG Geothermal Data'
@@ -55,7 +55,7 @@ function SearchForm(){
 	// Create the search field selection drop-down box
 	// Defaults to 'Any Text'
 	searchItems.push([{
-		width: 193,
+		width: 188,
 		xtype:          'combo',
 		mode:           'local',
 		value:          'Any Text',
@@ -85,7 +85,7 @@ function SearchForm(){
 	// Create the search term input text box
 	// Input required by user for search
 	searchItems.push([{
-		width: 193, 
+		width: 188, 
 		fieldLabel: 'Search Term',
 		value: 'Enter Search Term',
         name: 'first',
