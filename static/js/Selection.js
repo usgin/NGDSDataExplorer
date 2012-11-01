@@ -42,9 +42,9 @@ function MakeSelectable(){
 	
 	wfsLayers[l].events.on({
 		"featureselected": function(e) {
-			if (showPopups == true){
+			if (showPopups == true)
 				CreatePopup(e.feature);
-				}
+			
 			//console.log(e.feature);
 			//console.log("selected feature "+e.feature.id+" on "+e.feature.layer.name);
 			

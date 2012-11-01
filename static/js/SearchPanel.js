@@ -14,6 +14,14 @@
 function SearchForm(){
 	var searchItems = [];
 	
+	// State the catalog being searched
+	searchItems.push([{
+		width: 193, 
+		xtype: 'label',
+		fieldLabel: 'catalog',
+		text: 'USGIN AASG Geothermal Data'
+	}]);
+	
 	// Create the Catalog Services drop-down menu
 	// Defaults to 'http://catalog.stategeothermaldata.org/geoportal/csw?'
 	/*searchItems.push([{

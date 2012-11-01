@@ -1,12 +1,12 @@
 /*************************************************************************************************************************************************
-/	NGDS Search & Map View
+/	NGDS Feature Search & Map
 / 
-/ 	The National Geothermal Data System (NGDS) Search & Map View is a lightweight, open-source, publicly-accessible web mapping
+/ 	The National Geothermal Data System (NGDS) Feature Search & Map is a lightweight, open-source, publicly-accessible web mapping
 /	application which facilitates the discovery of geothermal features without the need to switch between multiple interfaces. An
 /	integrated search of the USGIN AASG Geothermal Data Catalog will list relevant feature services available for attribute querying
 /	and display on a map. The search can be limited to a specific geographical extent for further refinement. Once added to the map,
 /	attributes for features can either be shown in a feature popup or a table. Users can select features in data from different services
-/	for display in a single table. The (NGDS) Search & Map View is primarily for geologists and other researchers needing a quick
+/	for display in a single table. The (NGDS) Feature Search & Map is primarily for geologists and other researchers needing a quick
 /	and easy way to retrieve information about US geothermal features without the need for software beyond a web browser or the knowledge
 /	of who hosts which services.
 /	To be hosted at http://data.geothermaldatasystem.org/
@@ -141,7 +141,6 @@ Ext.onReady(function() {
 		id: 'form-panel',
         region: 'north',
 		height: 135,
-		title: 'USGIN AASG Geothermal Data',
 		hideLabels: true,
 		items: [SearchForm()],
 		buttons: [SearchButton()],
@@ -197,7 +196,7 @@ Ext.onReady(function() {
 	// The search panel which contains the form and the grid
     var searchPanel = new Ext.Panel({
 		id: 'search-panel',
-        title: 'Catalog Search',
+        title: 'Search Catalog',
         region: 'north',
 		width: 200,
 		height: 320,
@@ -254,7 +253,7 @@ Ext.onReady(function() {
 	var westPanel = new Ext.Panel({
 		region: "west",
 		id: 'layout-browser',
-		title: 'NGDS Search & Map View',
+		title: 'NGDS Feature Search & Map',
 		layout: 'border',
 		//layout: 'anchor',
 		border: false,

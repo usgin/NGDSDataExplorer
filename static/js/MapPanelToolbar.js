@@ -242,7 +242,7 @@ function SetMapExtent() {
 	map.getExtent();
 	var curBounds = map.getExtent();
 	bounds = curBounds.transform(googleMercator, wgs84);
- }
+}
  
 // Create a popup to display the data of the selected feature
 function CreatePopup(feature){
