@@ -1,7 +1,6 @@
 /*************************************************************************************************************************************************
 /	Map Panel Toolbar
 /	Create the components that make up the Map Panel Toolbar:
-/		- max extent
 /		- zoom layer
 /		- previous | next
 /		- set extent
@@ -96,6 +95,11 @@ var ctrl, action, toolbarItems = [], actions = {};
 					selectCtrl.deactivate();
 					selectBoxCtrl.activate();
 					selectBox = true;
+					
+					// turn off show popups
+					var sp = Ext.getCmp('show_popups');
+					sp.toggle(false);
+					showPopups = false;
 				}
 				else {
 					selectBoxCtrl.deactivate();
@@ -131,10 +135,16 @@ var ctrl, action, toolbarItems = [], actions = {};
 	action = new Ext.Action({ 
         text: "show popups",
         tooltip: "Show popups with feature data.",
+		id: "show_popups",
 		enableToggle: true, 
 		toggleHandler: function(button, state) {
-			if (state == true)
+			if (state == true) {
 				showPopups = true;
+				
+				// turn off select box
+				var sb = Ext.getCmp('select_box');
+				sb.toggle(false);
+			}
 			else {
 				showPopups = false;
 				
