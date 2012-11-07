@@ -18,17 +18,6 @@
 function CreateToolbar() {
 var ctrl, action, toolbarItems = [], actions = {};
 
-   // Zoom to max extent
-    action = new GeoExt.Action({
-        control: new OpenLayers.Control.ZoomToMaxExtent(),
-        map: map,
-        text: "max extent",
-        tooltip: "Zoom to max extent."
-    });
-    actions["max_extent"] = action;
-    toolbarItems.push(action);
-    toolbarItems.push("-");
-	
 	// Zoom to active layer						   
     action = new GeoExt.Action({
 		handler: function () {
