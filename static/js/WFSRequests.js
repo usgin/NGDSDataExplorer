@@ -127,7 +127,9 @@ function GetLayers(cap, baseUrl){
 				// Set the cursor back to the default after layer has been loaded
 				wfsLayers[l].events.register("loadend", wfsLayers[l], function (e) {
 					Ready();
-					//console.log(e);
+					
+					SetMaxExtent(e.object);
+
 					if ((e.object == undefined) || (e.object.features.length == 0)) {
 						alert(featureName+" wasn't loaded correctly. There maybe a problem with the server.");
 						//map.removeLayer(e.object);
@@ -201,23 +203,59 @@ function GetAttributes(protocol){
 // Zoom to the bounds of the feature
 function GetSubregion(featureType) {	
 	// Get the bounds for the feature
-	var featBounds =  new OpenLayers.Bounds(featureType.bounds.left, featureType.bounds.bottom, featureType.bounds.right, featureType.bounds.top);
+	var featBoundsBox =  new OpenLayers.Bounds(featureType.bounds.left, featureType.bounds.bottom, featureType.bounds.right, featureType.bounds.top);
 	// Transform
-	featBounds = featBounds.transform(wgs84, googleMercator);
+	featBoundsBox = featBoundsBox.transform(wgs84, googleMercator);
 	
 	// Draw orange highlight for bounding box
 /*	var boxLayers;
 	boxLayers = new OpenLayers.Layer.Vector(featureType.name + " Box");
-	var box = new OpenLayers.Feature.Vector(featBounds.toGeometry());
+	var box = new OpenLayers.Feature.Vector(featBoundsBox.toGeometry());
 	boxLayers.addFeatures(box);
 	map.addLayer(boxLayers); */
 	
 	// Outline bounding box in red
 /*	var boxes  = new OpenLayers.Layer.Boxes(featureType.name + " Box");
-	var box = new OpenLayers.Marker.Box(featBounds);
+	var box = new OpenLayers.Marker.Box(featBoundsBox);
 	boxes.addMarker(box);
 	map.addLayer(boxes); */
 
 	// Zoom to the bounds
-	map.zoomToExtent(featBounds);
+	map.zoomToExtent(featBoundsBox);
+}
+
+// Set the maximum bounds for all the loaded layers & Zoom to those bounds
+function SetMaxExtent(obj) {
+	// Get the bounds for the current layer
+	var curLeftB = obj.getDataExtent().left;
+	var curRightB = obj.getDataExtent().right;
+	var curTopB = obj.getDataExtent().top;
+	var curBottomB = obj.getDataExtent().bottom;
+	
+	// Set the max bound as the current bound if it's undefined
+	if (maxLeftB == undefined)
+		maxLeftB = curLeftB;
+	if (maxRightB == undefined)
+		maxRightB = curRightB;
+	if (maxTopB == undefined)
+		maxTopB = curTopB;
+	if (maxBottomB == undefined)
+		maxBottomB = curBottomB;
+	
+	// Change the max bound if the current bound makes the bounding box larger
+	if (curLeftB < maxLeftB)
+		maxLeftB = curLeftB;
+	if (curRightB > maxRightB)
+		maxRightB = curRightB;
+	if (curTopB > maxTopB)
+		maxTopB = curTopB;
+	if (curBottomB < maxBottomB)
+		maxBottomB = curBottomB;		
+
+	// Create the bounding box with the max bounds
+	var maxBoundsBox =  new OpenLayers.Bounds(maxLeftB, maxBottomB, maxRightB, maxTopB);
+	// Zoom to the max bounds
+	map.zoomToExtent(maxBoundsBox);
+	
+	//console.log(maxLeftB + ", " + maxBottomB + ", " + maxRightB + ", " + maxTopB);
 }

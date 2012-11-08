@@ -17,18 +17,38 @@
 function CreateToolbar() {
 var ctrl, action, toolbarItems = [], actions = {};
 
+   // Zoom to max extent
+    action = new GeoExt.Action({
+		handler: function () {
+			if (maxLeftB == undefined || maxBottomB == undefined || maxRightB == undefined || maxTopB == undefined)
+				alert("Load a layer first.");
+			else {
+				// Get the max bounds
+				var maxBoundsBox =  new OpenLayers.Bounds(maxLeftB, maxBottomB, maxRightB, maxTopB);	
+				// Zoom to the bounds
+				map.zoomToExtent(maxBoundsBox);
+			}
+		},
+        map: map,
+        text: "max extent",
+        tooltip: "Zoom to the maximum extent of all layers, regardless of whether the layer is turned on or off."
+    });
+    actions["max_extent"] = action;
+    toolbarItems.push(action);
+    toolbarItems.push("-");
+
 	// Zoom to active layer						   
     action = new GeoExt.Action({
 		handler: function () {
 			if (activeLayer != undefined)
 				map.zoomToExtent(activeLayer.getDataExtent());	
 			else
-				alert("Select an active layer.");
+				alert("Select a layer.");
 		},
         map: map,
 		disabled: false,
         text: "zoom layer",
-        tooltip: "Zoom to highlighted layer."
+        tooltip: "Zoom to layer highlighted in layers list."
     });
     actions["zoom_layer"] = action;
     toolbarItems.push(action);
