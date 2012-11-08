@@ -100,6 +100,10 @@ var ctrl, action, toolbarItems = [], actions = {};
 					var sp = Ext.getCmp('show_popups');
 					sp.toggle(false);
 					showPopups = false;
+					
+					// turn off measure
+					var m = Ext.getCmp('measure');
+					m.toggle(false);
 				}
 				else {
 					selectBoxCtrl.deactivate();
@@ -144,6 +148,10 @@ var ctrl, action, toolbarItems = [], actions = {};
 				// turn off select box
 				var sb = Ext.getCmp('select_box');
 				sb.toggle(false);
+				
+				// turn off measure
+				var m = Ext.getCmp('measure');
+				m.toggle(false);
 			}
 			else {
 				showPopups = false;
@@ -165,10 +173,21 @@ var ctrl, action, toolbarItems = [], actions = {};
 	action = new Ext.Action({ 
         text: "measure",
         tooltip: "Measure a distance.",
+		id: "measure",
         enableToggle: true, 
 		toggleHandler: function(button, state) {
-			if (state == true) 
+			if (state == true) {
 				measureCtrl.activate();
+				
+				// turn off show popups
+				var sp = Ext.getCmp('show_popups');
+				sp.toggle(false);
+				showPopups = false;
+				
+				// turn off select box
+				var sb = Ext.getCmp('select_box');
+				sb.toggle(false);
+			}
 			else
 				measureCtrl.deactivate();
 		}
