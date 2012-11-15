@@ -121,6 +121,8 @@ function CreateStatusbar(){
 			tooltip: 'Remove highlighted layer from layers list.',
 			handler: function (){
 				RemoveLayer();
+				ResetLayersExtent();
+				ZoomToLayersExtent();
 			}
 		}]
 	})

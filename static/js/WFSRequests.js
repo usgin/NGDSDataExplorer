@@ -128,7 +128,9 @@ function GetLayers(cap, baseUrl){
 				wfsLayers[l].events.register("loadend", wfsLayers[l], function (e) {
 					Ready();
 					
-					SetMaxExtent(e.object);
+					// Set the maximum bounds for all the loaded layers & Zoom to those bounds
+					SetLayersExtent(e.object);
+					ZoomToLayersExtent();				
 
 					if ((e.object == undefined) || (e.object.features.length == 0)) {
 						alert(featureName+" wasn't loaded correctly. There maybe a problem with the server.");
@@ -224,8 +226,8 @@ function GetSubregion(featureType) {
 	map.zoomToExtent(featBoundsBox);
 }
 
-// Set the maximum bounds for all the loaded layers & Zoom to those bounds
-function SetMaxExtent(obj) {
+// Set the maximum bounds for all the loaded layers 
+function SetLayersExtent(obj) {
 	// Get the bounds for the current layer
 	var curLeftB = obj.getDataExtent().left;
 	var curRightB = obj.getDataExtent().right;
@@ -251,11 +253,29 @@ function SetMaxExtent(obj) {
 		maxTopB = curTopB;
 	if (curBottomB < maxBottomB)
 		maxBottomB = curBottomB;		
+}
 
+// Reset the maximum extent of all the loaded layers
+function ResetLayersExtent() {
+	maxLeftB = undefined;
+	maxRightB = undefined;
+	maxTopB = undefined;
+	maxBottomB = undefined;
+	
+	for (var i = 0; i < map.layers.length; i++) {
+		if (map.layers[i].isBaseLayer != true) {
+			if (map.layers[i].features.length != 0) {
+				SetLayersExtent(map.layers[i]);
+			}
+		}
+	}
+}
+
+// Zoom to the extent of all of the loaded layers
+function ZoomToLayersExtent() {
 	// Create the bounding box with the max bounds
 	var maxBoundsBox =  new OpenLayers.Bounds(maxLeftB, maxBottomB, maxRightB, maxTopB);
 	// Zoom to the max bounds
 	map.zoomToExtent(maxBoundsBox);
-	
 	//console.log(maxLeftB + ", " + maxBottomB + ", " + maxRightB + ", " + maxTopB);
 }

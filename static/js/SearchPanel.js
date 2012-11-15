@@ -19,7 +19,7 @@ function SearchForm(){
 		width: 188, 
 		xtype: 'label',
 		fieldLabel: 'catalog',
-		text: 'USGIN AASG Geothermal Data'
+		text: 'AASG Geothermal Data Catalog'
 	}]);
 	
 	// Create the Catalog Services drop-down menu

@@ -101,7 +101,7 @@ function MakeSelectable(){
 	});
 }
 
-// Set layr in node parameter as the active layer and set the active features for that layer
+// Set layer in node parameter as the active layer and set the active features for that layer
 function SetActive(node){
 	//console.log("activeLayer name:");
 	//console.log(node.layer.name);

@@ -106,7 +106,7 @@ Ext.onReady(function() {
 	CreateMeasurementCtrl();
 	
 	// Create an empty store since a search has not been performed yet
-	var noData = [ ['No catalogs searched yet.'] ];
+	var noData = [ ['No search perfomed yet.'] ];
     var emptyStore = new Ext.data.ArrayStore({
         fields: [
            {name: 'title'}

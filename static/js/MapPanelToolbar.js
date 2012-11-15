@@ -8,6 +8,7 @@
 /		- clear selected
 /		- show popups
 /		- measure
+/		- wfs url
 /		- create table (see Export.js)
 /		- create csv (see Export.js)
 /		- help (see Help.js)
@@ -83,7 +84,7 @@ var ctrl, action, toolbarItems = [], actions = {};
 	action = new Ext.Action({ 
 		id: "setExtentBtn",
         text: "set extent",
-        tooltip: "Only new features within the extent will be added to the map.",
+        tooltip: "Only new features within the current map extent will be added when a new layer is loaded.",
         map: map,
 		hidden: false,
 		enableToggle: true, 
@@ -215,7 +216,20 @@ var ctrl, action, toolbarItems = [], actions = {};
     actions["measure"] = action;
     toolbarItems.push(action);
 	toolbarItems.push("-");	
-	  
+	
+	// Copy WFS URL
+	action = new GeoExt.Action({
+		text: "wfs url",
+		tooltip: "Copy the URL of the WFS for the highlighted layer.",
+		map: map,
+		handler: function(item, pressed) {
+			window.prompt ("Copy to clipboard: Ctrl+C/Cmd+C, Enter", activeLayer.protocol.url);
+		}
+	});
+	actions["wfs_url"] = action;
+	toolbarItems.push(action);	
+	toolbarItems.push("-");	
+	
 	// Create an html table
 	action = new Ext.Button({ 
         text: "create table",
