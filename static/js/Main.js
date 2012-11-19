@@ -36,7 +36,7 @@ var store;					// The store to hold the results of the catalog search
 var curRow = 0;				// Currently selected row in the csw grid
 var checkedLayers = [];		// Array of layers that are currently checked in the layer tree
 var checkedFeatures = []; 	// Selected features in the checked layers
-var useVisibleExtent;		// Boolean for whether Use Current Map Extent for the search is checked or not
+var useVisibleExtent = false;// Boolean for whether Use Current Map Extent for the search is checked or not
 var bounds;					// The bounds of the map
 var measureCtrl;			// Control for the distance measurement tool
 var hits;					// Number of features in the data service layer being requested
