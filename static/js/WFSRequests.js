@@ -262,6 +262,7 @@ function ResetLayersExtent() {
 	maxTopB = undefined;
 	maxBottomB = undefined;
 	
+	// Get the extent of loaded layers
 	for (var i = 0; i < map.layers.length; i++) {
 		if (map.layers[i].isBaseLayer != true) {
 			if (map.layers[i].features.length != 0) {
@@ -269,6 +270,10 @@ function ResetLayersExtent() {
 			}
 		}
 	}
+	
+	// If all the layers have been removed set map back to center
+	if (maxLeftB == undefined || maxRightB == undefined || maxTopB == undefined || maxBottomB == undefined)
+		map.setCenter(new OpenLayers.LonLat(-98.583, 39.833).transform(wgs84, googleMercator), 5);
 }
 
 // Zoom to the extent of all of the loaded layers
