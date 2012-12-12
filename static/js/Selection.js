@@ -4,6 +4,7 @@
 /	- Set the selected features
 /	- Set the active layer and active features (selected features on the active layer)
 / 	- Set the checked layer(s) and checked features (selected features on the checked layer(s))
+/	- Toggle the legend panel open or closed
 /************************************************************************************************************************************************/
 
 // Allow for selecting/unselecting a feature and set options	
@@ -148,48 +149,53 @@ function SetActive(node){
 // add any selected featues on this layer to checkedFeatures
 // If checked layer is the active layer, add selected features to activeFeatures
 function LayerChecked(node) {
-	// If no layers are already checked, open the legend panel
-	if (checkedLayers.length == 0) {
-		var lp = Ext.getCmp('legendPanel');
-		lp.expand();
-	}
 
-	// Add the checked layer to the checkedLayers array
-	checkedLayers.push(node.layer);
-	
-	// Add the selected features on the checked layer to the checkedFeatures array
-	for (var i=0; i < selFeatures.length; i++) {
-		if (selFeatures[i].layer.name == node.layer.name)
-			checkedFeatures.push(selFeatures[i]);
+	// Add the checked layer to the checkedLayers array if it's not already in it
+	if (IsIn(checkedLayers, node.layer) == false) {
+		checkedLayers.push(node.layer);
+		//console.log(checkedLayers.length+" layers checked");
+		ToggleLegend();
+		
+		// Add the selected features on the checked layer to the checkedFeatures array
+		for (var i=0; i < selFeatures.length; i++) {
+			if (selFeatures[i].layer.name == node.layer.name)
+				checkedFeatures.push(selFeatures[i]);
+		}
 	}
-	 
-	// If no active layer has been set yet, set the checked layer as the active layer
-	/*if (activeLayer == undefined) {
-		node.select();
-		SetActive(node);
-	}	*/
 	
 	// If the checked layer is the same as the active layer set the active features
 	if (activeLayer != undefined) {
 		if (node.layer.name == activeLayer.name)	
 			SetActive(node);
 	}
+
 }
 
 // Remove layer in node parameter from checkedLayers array and
 // remove that layer's selected features from checkedFeatures array
 function LayerUnchecked(node) {
 	checkedLayers.splice(checkedLayers.indexOf(node.layer), 1);
+	//console.log(checkedLayers.length+" layers checked");
+	ToggleLegend();
+	
 	for (var i=0; i < checkedFeatures.length; i++) {
 		if (checkedFeatures[i].layer.name == node.layer.name) {
 			checkedFeatures.splice(i, 1);
 			i--;
 		}
 	}
-	
-	// If no layers left checked close the legend panel
+}
+
+// If no layers are checked collapse the legend panel, otherwise expand it
+function ToggleLegend() {
+	// If no layers are checked, collapse the legend panel
 	if (checkedLayers.length == 0) {
 		var lp = Ext.getCmp('legendPanel');
 		lp.collapse();
+	}
+	// Otherwise expand the legend panel
+	else {
+		var lp = Ext.getCmp('legendPanel');
+		lp.expand();
 	}
 }

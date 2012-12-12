@@ -121,8 +121,6 @@ function CreateStatusbar(){
 			tooltip: 'Remove highlighted layer from layers list.',
 			handler: function (){
 				RemoveLayer();
-				ResetLayersExtent();
-				ZoomToLayersExtent();
 			}
 		}]
 	})
@@ -130,22 +128,28 @@ function CreateStatusbar(){
 
 // Remove a layer from the layer list
 function RemoveLayer() {
+	//console.log(checkedLayers.length+" layers before remove");
+	
 	// If a layer (activeLayer) has been selected remove it
 	if (activeLayer != undefined) {
-		//console.log(checkedLayers);
-		//console.log(checkedFeatures);
 		
-		// Remove activeLayer from checkedLayers array
-		checkedLayers.splice(checkedLayers.indexOf(activeLayer), 1);
-		
-		// Remove features in activeLayer from checkedFeatures array
-		for (var i=0; i < checkedFeatures.length; i++) {
-			if (checkedFeatures[i].layer.name == activeLayer.name) {
-				checkedFeatures.splice(i, 1);
-				i--;
+		// If the layer being removed is checked
+		if (IsIn(checkedLayers, activeLayer) == true) {
+			//console.log(checkedFeatures);
+			
+			// Remove activeLayer from checkedLayers array
+			checkedLayers.splice(checkedLayers.indexOf(activeLayer), 1);
+			ToggleLegend();
+			
+			// Remove features in activeLayer from checkedFeatures array
+			for (var i=0; i < checkedFeatures.length; i++) {
+				if (checkedFeatures[i].layer.name == activeLayer.name) {
+					checkedFeatures.splice(i, 1);
+					i--;
+				}
 			}
 		}
-		//console.log(checkedLayers);
+		//console.log(checkedLayers.length+" layers after remove");
 		//console.log(checkedFeatures);
 		
 		// Remove features in activeLayer from selFeatures array
@@ -159,15 +163,19 @@ function RemoveLayer() {
 		// Remove all features from activeLayer
 		activeLayer.removeAllFeatures();
 		
+		//activeLayer.destroy();
 		// Remove activeLayer
-		map.removeLayer(activeLayer);
+		map.removeLayer(activeLayer, false);
 		
 		// activeLayer is now undefined
 		activeLayer = undefined;
+		
+		ResetLayersExtent();
+		ZoomToLayersExtent();
 	}
 	else {
-		// If the basemap is the only layer
-		if (map.getNumLayers() == 1)
+		// If the basemaps are the only layers
+		if (map.getNumLayers() == 3)
 			alert("Add a layer first.");
 		else
 			alert("Select a layer to remove.");

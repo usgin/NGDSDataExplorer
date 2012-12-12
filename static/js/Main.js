@@ -231,7 +231,11 @@ Ext.onReady(function() {
 		listeners: {
 			insert: function(tree, parent, node, refNode) {
 				if (node.layer.isBaseLayer == false)
-					LayerChecked(node);
+					if (node.layer.visibility == true){
+						//console.log(node);
+						//console.log(map);
+						LayerChecked(node);
+					}
 			},
 			// When a layer is clicked
 			click: function(node, e) {
@@ -293,4 +297,5 @@ function IsIn(arr, obj){
 		if (arr[i] == obj) 
 			return true;
 	}
+	return false;
 }
