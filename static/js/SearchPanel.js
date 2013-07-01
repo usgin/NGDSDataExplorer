@@ -134,7 +134,7 @@ function DoSearch() {
 	if (searchTerm == "")
 		alert("Enter a search term.");
 	else {
-		var cswUrl = 'http://catalog.stategeothermaldata.org/geoportal/csw?'
+		var cswUrl = 'http://catalog.stategeothermaldata.org/geoportal/csw?';
 		GetRecordsCSW(cswUrl);
 	}
 }

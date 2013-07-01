@@ -2,3 +2,4 @@ node_modules/
 static/js/HelpText.html
 files/
 .gitignore
+.project

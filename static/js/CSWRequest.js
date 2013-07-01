@@ -40,7 +40,7 @@ function GetRecordsCSW(cswUrl) {
 // Create the paramaters to send to the server with CSW request
 function CreateParams() {
 	var startPos = 1;
-	var maxRecords = "1000";
+	var maxRecords = "10000";
 	//searchTerm = "borehole";
 	if (useVisibleExtent == false) {
 		var params = {
