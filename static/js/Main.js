@@ -1,16 +1,16 @@
 /*************************************************************************************************************************************************
-/	NGDS Feature Search & Map
+/	NGDS Data Explorer
 / 
-/	The National Geothermal Data System (NGDS) Feature Search & Map was developed to be a lightweight, open-source, publicly-accessible web mapping
+/	The National Geothermal Data System (NGDS) Data Explorer was developed to be a lightweight, open-source, publicly-accessible web mapping
 / 	application which facilitates the discovery of geothermal features without the need to switch between multiple interfaces. An integrated search
 /	of the U.S. Geoscience Information Network (USGIN) Association of American State Geologists (AASG) Geothermal Data Catalog will list relevant
 /	feature services available for attribute querying and display on a map. The search can be limited to a specific geographical extent for further
 /	refinement. Once added to the map, attributes for features can either be shown in a feature popup or a table. Users can also select features from
-/	different data services for display in a single table. The NGDS Feature Search & Map is primarily for geologists and other researchers needing a
+/	different data services for display in a single table. The NGDS Data Explorer is primarily for geologists and other researchers needing a
 /	quick and easy way to retrieve information about U.S. geothermal features without the need for software beyond a web browser or the knowledge of
 /	who hosts which services. 
 /	To be accessed at http://data.geothermaldatasystem.org/
-/	Developed by Jessica Good Alisdairi at the Arizona Geological Service
+/	Developed by Jessica Good Alisdairi at the Arizona Geological Survey
 / 	
 /	Utilizes OpenLayers v2.12-rc7, GeoExt v1.1 and ExtJs v3.4
 /************************************************************************************************************************************************/
@@ -259,7 +259,7 @@ Ext.onReady(function() {
 	var westPanel = new Ext.Panel({
 		region: "west",
 		id: 'layout-browser',
-		title: 'NGDS Feature Search & Map',
+		title: 'NGDS Data Explorer',
 		layout: 'border',
 		//layout: 'anchor',
 		border: false,
