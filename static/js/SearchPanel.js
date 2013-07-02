@@ -131,9 +131,20 @@ function SearchButton () {
 
 // Perform the search by calling GetRecordsCSW
 function DoSearch() {
+	// Remove leading and trailing whitespace and wildcards
+	searchTerm = searchTerm.trim();
+	searchTerm = searchTerm.replace("*", "");
 	if (searchTerm == "")
 		alert("Enter a search term.");
+	else if (searchTerm == "*")
+		alert("Too many results. Enter a search term.");
 	else {
+		// If there is more than one search term and they are not separated by an AND or OR already
+		// then add an AND between the words
+		if(searchTerm.match(/\sOR\s/g) == null && searchTerm.match(/\sAND\s/g) == null ) {
+			searchTerm = searchTerm.replace(/\s+/g, " AND ");
+		}
+		// console.log(searchTerm)
 		var cswUrl = 'http://catalog.stategeothermaldata.org/geoportal/csw?';
 		GetRecordsCSW(cswUrl);
 	}
