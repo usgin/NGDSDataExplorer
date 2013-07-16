@@ -71,19 +71,19 @@ Ext.onReady(function() {
 	});
 	
 	// Use Google Maps as base layers
-	var baseLayer = new OpenLayers.Layer.Google(
+	var ghyb = new OpenLayers.Layer.Google(
 		"Google Hybrid",
 		{type: google.maps.MapTypeId.HYBRID, numZoomLevels: 20, isBaseLayer:true, displayInLayerSwitcher:true}
 	);
-	var baseLayer2 = new OpenLayers.Layer.Google(
+	var gter = new OpenLayers.Layer.Google(
 		"Google Terrain",
 		{type: google.maps.MapTypeId.TERRAIN, numZoomLevels: 20, isBaseLayer:true, displayInLayerSwitcher:true}
 	);
-	var baseLayer3 = new OpenLayers.Layer.Google(
+	var gmap = new OpenLayers.Layer.Google(
 		"Google Streets",
 		{type: google.maps.MapTypeId.STREETS, numZoomLevels: 20, isBaseLayer:true, displayInLayerSwitcher:true}
 	);
-	
+
 	// Create a zoom slider bound to the map
     slider = new GeoExt.ZoomSlider({
         map: map,
@@ -121,7 +121,7 @@ Ext.onReady(function() {
 		title: "Map Viewer",
 		xtype: "gx_mappanel",
 		map: map,
-		layers: [baseLayer, baseLayer2, baseLayer3],
+		layers: [gmap, ghyb, gter],
 		// Transform the coordinates to Google Web Mercator to center map on US
 		center: new OpenLayers.LonLat(-98.583, 39.833).transform(wgs84, googleMercator), 
 		zoom: 5,

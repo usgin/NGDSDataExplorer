@@ -31,7 +31,7 @@ function GetCapabilities(baseUrl){
 					//console.log(cap)
 					if (cap.error.success != undefined) {
 						if (cap.error.success == false)
-							alert("There was a problem with the url.");
+							alert("There was a problem with " + baseUrl + ". Try again later.");
 					}
 					else {	
 						// Get the feature layers
@@ -41,10 +41,10 @@ function GetCapabilities(baseUrl){
 					//console.log(wfsLayers);
 				}
 				else if (resp.status == 404){
-					alert("Requested resource not available. Try again later.")
+					alert("Unable to reach " + baseUrl + ". Try again later.");
 				}
 				else{
-					alert("Invalid url.");
+					alert("Unable to reach " + baseUrl + ". Try again later.");
 				}
 			}
 		})
@@ -133,7 +133,7 @@ function GetLayers(cap, baseUrl){
 					ZoomToLayersExtent();				
 
 					if ((e.object == undefined) || (e.object.features.length == 0)) {
-						alert(featureName+" wasn't loaded correctly. There maybe a problem with the server.");
+						alert(featureName+" wasn't loaded correctly. Try again.");
 						//map.removeLayer(e.object);
 						//activeLayer = undefined;
 						//l--;
@@ -172,16 +172,16 @@ function GetHits(baseUrl, featureName){
 					}
 				}
 				else if (resp.status == 404){
-					alert("Requested resource not available. Try again later.")
+					alert("Unable to reach " + baseUrl + ". Try again later.");
 				}
 				else{
-					alert("Invalid url.");
+					alert("Unable to reach " + baseUrl + ". Try again later.");
 				}
 			}
 		});
 	}
 	catch (e) {
-		alert("Problem determining the number of hits");
+		alert("Unable to determine the number of features.");
 	}
 }
 
