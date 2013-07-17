@@ -2,12 +2,12 @@ div.olControlScaleLine {
 	right: auto;
 	bottom: 20px;
 	left: 70px;
-	color: white;
+	color: black;
 }
 
 div.olControlMousePosition {
     top: 0em;
-	color: white;
+	color: black;
 }
 
 div.olControlOverviewMapElement {
