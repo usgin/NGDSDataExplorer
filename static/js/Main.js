@@ -32,6 +32,7 @@ var selectBox = false;		// The 'select box' is not initially pressed
 var searchField = "AnyText";// The field being searched in the catalog
 var searchTerm = "";		// The term being searched for in the catalog
 var gridPanel;				// The grid panel to display the results of the catalog search
+var layersPanel;			// The panel for the layers of the map
 var store;					// The store to hold the results of the catalog search
 var curRow = 0;				// Currently selected row in the csw grid
 var checkedLayers = [];		// Array of layers that are currently checked in the layer tree
@@ -212,7 +213,7 @@ Ext.onReady(function() {
 	});
 
 	// The Layers Panel
-	var layersPanel = new Ext.tree.TreePanel({
+	layersPanel = new Ext.tree.TreePanel({
 		title: "Layers",
 		region:'center',
 		xtype: "treepanel",
@@ -249,8 +250,16 @@ Ext.onReady(function() {
 					else
 						LayerUnchecked(node);
 				}
-			}
+			},
+			// Right Click Menu
+			contextmenu: function (node, e) {
+                node.select();
+                var c = node.getOwnerTree().contextMenu;
+                c.contextNode = node;
+                c.showAt(e.getXY())
+            }
 		},
+		contextMenu: CreateContextMenu(),
 		tbar: CreateDataServicesToolbar(),
 		bbar: CreateStatusbar()
 	});

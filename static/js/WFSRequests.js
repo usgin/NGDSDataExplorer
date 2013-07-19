@@ -109,7 +109,7 @@ function GetLayers(cap, baseUrl){
 					});
 					wfsLayers[l].filter = bboxFilter;
 				}
-			
+				wfsLayers[l].cap = cap;
 				map.addLayer(wfsLayers[l]);
 				MakeSelectable();
 				//console.log(map);

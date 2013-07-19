@@ -115,19 +115,19 @@ function CreateStatusbar(){
 	return new Ext.ux.StatusBar({
 		id: 'basic-statusbar',
 		text: 'Ready',
-		iconCls: 'x-status-valid',
+		iconCls: 'x-status-valid'/*,
 		items: [{
 			text: 'Remove Layer',
 			tooltip: 'Remove highlighted layer from layers list.',
 			handler: function (){
-				RemoveLayer();
+				RemoveLayerOld();
 			}
-		}]
+		}]*/
 	})
 }
 
 // Remove a layer from the layer list
-function RemoveLayer() {
+function RemoveLayerOld() {
 	//console.log(checkedLayers.length+" layers before remove");
 	
 	// If a layer (activeLayer) has been selected remove it

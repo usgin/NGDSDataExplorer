@@ -1,7 +1,7 @@
 /*************************************************************************************************************************************************
 /	Map Panel Toolbar
 /	Create the components that make up the Map Panel Toolbar:
-/		- zoom layer
+/		- zoom extent
 /		- previous | next
 /		- set extent
 /		- select box
@@ -31,7 +31,7 @@ var ctrl, action, toolbarItems = [], actions = {};
 			}
 		},
         map: map,
-        text: "max extent",
+        text: "zoom extent",
         tooltip: "Zoom to the maximum extent of all layers, regardless of whether the layer is turned on or off."
     });
     actions["max_extent"] = action;
@@ -39,7 +39,7 @@ var ctrl, action, toolbarItems = [], actions = {};
     toolbarItems.push("-");
 
 	// Zoom to active layer						   
-    action = new GeoExt.Action({
+/*    action = new GeoExt.Action({
 		handler: function () {
 			if (activeLayer != undefined)
 				map.zoomToExtent(activeLayer.getDataExtent());	
@@ -53,7 +53,7 @@ var ctrl, action, toolbarItems = [], actions = {};
     });
     actions["zoom_layer"] = action;
     toolbarItems.push(action);
-    toolbarItems.push("-");
+    toolbarItems.push("-");*/
 	
 	// Navigation history
     ctrl = new OpenLayers.Control.NavigationHistory();
@@ -273,7 +273,7 @@ var ctrl, action, toolbarItems = [], actions = {};
 			},{
 				text: "Report Bugs / Request Features",
 				handler: function(button, evt) {
-					helpBugsFeatures();
+					HelpBugsFeatures();
 				}
 			},{
 				text: "About",
