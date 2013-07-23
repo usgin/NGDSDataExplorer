@@ -306,8 +306,12 @@ function CreatePopup(feature){
 	
 	// Create the HTML for the popup from the feature's data
 	for (var i in featureInfo){
-		featureInfoHTML = featureInfoHTML+"<b>"+ i +"</b>: "+featureInfo[i]+"<br>";
+		// Make a HTML link for any Url within the text
+		replacePattern1 = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim;
+		replacedText = featureInfo[i].replace(replacePattern1, '<a href="$1" target="_blank">$1</a>');
+		featureInfoHTML = featureInfoHTML + "<b>" + i + "</b>: " + replacedText + "<br>";	
 	}
+	
 	//console.log(popupTitle);
 	popup = new GeoExt.Popup({
             title: popupTitle,
@@ -321,7 +325,7 @@ function CreatePopup(feature){
         });
     popup.show();
 }
- 
+
 // Create the control for the measurement tool
 function CreateMeasurementCtrl() {
 	var sketchSymbolizers = {

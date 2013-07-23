@@ -116,8 +116,12 @@ function WriteTable(output, outputType) {
 				var curRowData = checkedFeatures[i].data;
 				if ((curRowData[curColName]) == undefined)
 					output += "<td></td>";
-				else
-					output += "<td>"+curRowData[curColName]+"</td>";
+				else {
+					// Make a HTML link for any Url within the text
+					replacePattern1 = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim;
+					replacedText = curRowData[curColName].replace(replacePattern1, '<a href="$1" target="_blank">$1</a>');
+					output += "<td>"+replacedText+"</td>";
+				}
 			}
 			output += "</tr>";
 		}				
