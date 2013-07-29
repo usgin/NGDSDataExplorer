@@ -23,6 +23,12 @@ function CreateContextMenu(){
 	        },
 	        scope: this
 	    },{
+	        text: "Remove Layer",
+	        handler: function () {
+	        	var node = layersPanel.getSelectionModel().getSelectedNode();
+	        	RemoveLayer(node.layer);
+	        }
+	    },{
 	        text: "Metadata",
 	        handler: function () {
 	            if (!winContext) {
@@ -48,13 +54,7 @@ function CreateContextMenu(){
 	            winContext.show(this);
 	        },
 	        scope: this
-	        },{
-	        text: "Remove Layer",
-	        handler: function () {
-	        	var node = layersPanel.getSelectionModel().getSelectedNode();
-	        	RemoveLayer(node.layer);
-	        }
-	    }]
+		}]
 	})
 }
  
