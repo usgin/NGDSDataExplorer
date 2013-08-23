@@ -29,7 +29,7 @@ function GetRecordsCSW(cswUrl) {
 					alert("Unable to reach " + cswUrl + ". Try again later.");
 				}
 			}
-		})
+		});
 	}
 	catch (e){
 		Ready();
@@ -58,8 +58,8 @@ function CreateParams() {
 		};
 	}
 	else {
-		var bounds = map.getExtent();
-		var newBounds = bounds.transform(googleMercator, wgs84)
+		var searchBounds = map.getExtent();
+		var newBounds = searchBounds.transform(googleMercator, wgs84);
 	
 		var params = {
 			request: "GetRecords",

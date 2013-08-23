@@ -22,8 +22,6 @@ var l = 0;					// Variable to keep track of the number of layers added
 var popup;					// The popup for the description of a feature
 var showPopups = false;		// We don't want to show popups until user has clicked 'show popups' button
 var activeLayer;			// Current active layer
-var activeFeatures = [];	// Array of active features
-var selFeatures = [];		// Array of selected features across all layers
 var numOfAttributes;   		// Only needed for EXCEL - can delete
 var layerAttributes;		// The attributes of the layer
 var selectCtrl; 			// Control for the selection of individual features
@@ -35,8 +33,6 @@ var gridPanel;				// The grid panel to display the results of the catalog search
 var layersPanel;			// The panel for the layers of the map
 var store;					// The store to hold the results of the catalog search
 var curRow = 0;				// Currently selected row in the csw grid
-var checkedLayers = [];		// Array of layers that are currently checked in the layer tree
-var checkedFeatures = []; 	// Selected features in the checked layers
 var useVisibleExtent = false;// Boolean for whether Use Current Map Extent for the search is checked or not
 var bounds;					// The bounds of the map
 var measureCtrl;			// Control for the distance measurement tool
@@ -61,6 +57,7 @@ Ext.onReady(function() {
 	
 	// Initialize the map
 	map = new OpenLayers.Map('map', {
+		maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34),
 		// Add the map controls
 		controls: [
 			new OpenLayers.Control.Navigation(),	
@@ -217,6 +214,7 @@ Ext.onReady(function() {
 		title: "Layers",
 		region:'center',
 		xtype: "treepanel",
+		headerAsTest: true,
 		autoScroll: true,
 		split: true,
 		enableDD: true,
@@ -232,31 +230,32 @@ Ext.onReady(function() {
 		listeners: {
 			insert: function(tree, parent, node, refNode) {
 				if (node.layer.isBaseLayer == false)
-					if (node.layer.visibility == true){
-						//console.log(node);
-						//console.log(map);
-						LayerChecked(node);
-					}
+					ToggleLegend();
 			},
 			// When a layer is clicked
 			click: function(node, e) {
-				SetActive(node);
+				if (node.layer.isBaseLayer == false)
+					activeLayer = node.layer;
+				else
+					activeLayer = undefined;
 			},
 			// When a layer is checked or unchecked
 			checkchange: function(node, e) {
 				if (node.layer.isBaseLayer == false) {
-					if (e == true)
-						LayerChecked(node);
-					else
-						LayerUnchecked(node);
+					ToggleLegend();
 				}
 			},
 			// Right Click Menu
 			contextmenu: function (node, e) {
-                node.select();
-                var c = node.getOwnerTree().contextMenu;
-                c.contextNode = node;
-                c.showAt(e.getXY())
+				if (node.layer.isBaseLayer == false) {
+					activeLayer = node.layer;
+					node.select();
+	                var c = node.getOwnerTree().contextMenu;
+	                c.contextNode = node;
+	                c.showAt(e.getXY());
+				}
+				else
+					activeLayer = undefined;
             }
 		},
 		contextMenu: CreateContextMenu(),

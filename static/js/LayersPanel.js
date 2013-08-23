@@ -5,7 +5,6 @@
 /		- Base Url input box
 /		- Layer tree (see Main.js)
 /		- Status display
-/		- Remove Layer button
 /************************************************************************************************************************************************/
 
 // Create the top toolbar consisting of:
@@ -13,7 +12,7 @@
 //	- Base Url input box
 function CreateDataServicesToolbar(){
 	var dataServicesToolbar = [];
-	
+
 	// Create the Quick-Pick Data Services combo box
 	dataServicesToolbar.push([{
 		width:			175, 
@@ -31,8 +30,8 @@ function CreateDataServicesToolbar(){
 		store: 			new Ext.data.JsonStore({
 			fields: ['name', 'value'],
 			data: [
-				//{name: 'AZActiveFaults', value: 'http://services.azgs.az.gov/arcgis/services/aasggeothermal/AZActiveFaults/MapServer/WFSServer'}, // !!!!!! PARSING ERRROR !!!!!
-				{name: 'AZaqSpringChemistry', value: 'http://services.azgs.az.gov/arcgis/services/aasggeothermal/AZaqSpringChemistry/MapServer/WFSServer'},
+				{name: 'AZActiveFaults', value: 'http://services.azgs.az.gov/arcgis/services/aasggeothermal/AZActiveFaults/MapServer/WFSServer'}, // !!!!!! PARSING ERRROR !!!!!
+				{name: 'AZaqSpringChemistry1_10', value: 'http://services.azgs.az.gov/ArcGIS/services/aasggeothermal/AZAqueousChemistry1_10/MapServer/WFSServer'},
 				{name: 'AZaqWellChemistry', value: 'http://services.azgs.az.gov/arcgis/services/aasggeothermal/AZaqWellChemistry/MapServer/WFSServer'},
 				{name: 'AZBoreholeTemperatures', value: 'http://services.azgs.az.gov/arcgis/services/aasggeothermal/AZBoreholeTemperatures/MapServer/WFSServer'},
 				{name: 'AZDrillStemTests', value: 'http://services.azgs.az.gov/arcgis/services/aasggeothermal/AZDrillStemTests/MapServer/WFSServer'},
@@ -123,63 +122,7 @@ function CreateStatusbar(){
 				RemoveLayerOld();
 			}
 		}]*/
-	})
-}
-
-// Remove a layer from the layer list
-function RemoveLayerOld() {
-	//console.log(checkedLayers.length+" layers before remove");
-	
-	// If a layer (activeLayer) has been selected remove it
-	if (activeLayer != undefined) {
-		
-		// If the layer being removed is checked
-		if (IsIn(checkedLayers, activeLayer) == true) {
-			//console.log(checkedFeatures);
-			
-			// Remove activeLayer from checkedLayers array
-			checkedLayers.splice(checkedLayers.indexOf(activeLayer), 1);
-			ToggleLegend();
-			
-			// Remove features in activeLayer from checkedFeatures array
-			for (var i=0; i < checkedFeatures.length; i++) {
-				if (checkedFeatures[i].layer.name == activeLayer.name) {
-					checkedFeatures.splice(i, 1);
-					i--;
-				}
-			}
-		}
-		//console.log(checkedLayers.length+" layers after remove");
-		//console.log(checkedFeatures);
-		
-		// Remove features in activeLayer from selFeatures array
-		for (var i=0; i < selFeatures.length; i++) {
-			if (selFeatures[i].layer.name == activeLayer.name) {
-				selFeatures.splice(i, 1);
-				i--;
-			}
-		}		
-		
-		// Remove all features from activeLayer
-		activeLayer.removeAllFeatures();
-		
-		//activeLayer.destroy();
-		// Remove activeLayer
-		map.removeLayer(activeLayer, false);
-		
-		// activeLayer is now undefined
-		activeLayer = undefined;
-		
-		ResetLayersExtent();
-		ZoomToLayersExtent();
-	}
-	else {
-		// If the basemaps are the only layers
-		if (map.getNumLayers() == 3)
-			alert("Add a layer first.");
-		else
-			alert("Select a layer to remove.");
-	}
+	});
 }
 
 // Set cursor to wait and statusbar to loading

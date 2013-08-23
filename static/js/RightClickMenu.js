@@ -2,7 +2,13 @@
 /	Right Click Menu (Context Menu)
 /	Create the components the make up the context menu for the layer list:
 /		- Zoom to Layer Extent
-/ 		- Metadata
+/ 		- View Table of All Features
+/		- View Table of Selected Features
+/		- Export All Features to a CSV
+/		- Export Selected Features to a CSV
+/		- Remove Layer
+/		- Get the URL of the WFS Server
+/		- Layer Metadata
 /************************************************************************************************************************************************/
 
 // Create the right click menu for the layers panel
@@ -13,23 +19,59 @@ function CreateContextMenu(){
 	        handler: function () {
 	            var node = layersPanel.getSelectionModel().getSelectedNode();
 	            if (node && node.layer) {
-	            	if (node.layer.isBaseLayer == false) {
-	                	this.map.zoomToExtent(node.layer.getDataExtent())
-	               }
-	               else {
-	               		this.map.zoomToExtent(node.layer.maxExtent)
-	               }
+	                this.map.zoomToExtent(node.layer.getDataExtent());
 	            }
 	        },
 	        scope: this
 	    },{
+	        text: "Export All Features to a CSV",
+	        handler: function () {
+	        	var node = layersPanel.getSelectionModel().getSelectedNode();
+	        	ExportSingleLayer(node.layer, "csv", "all");
+	        }
+	    },{
+	        text: "Export All Features to a Table",
+	        handler: function () {
+	        	var node = layersPanel.getSelectionModel().getSelectedNode();
+	        	ExportSingleLayer(node.layer, "html", "all");
+	        }
+	    },{
+	        text: "Export Selected Features to a CSV",
+	        handler: function () {
+	        	var node = layersPanel.getSelectionModel().getSelectedNode();
+	        	ExportSingleLayer(node.layer, "csv", "selected");
+	        }
+	    },{
+	        text: "Export Selected Features to a Table",
+	        handler: function () {
+	        	var node = layersPanel.getSelectionModel().getSelectedNode();
+	        	ExportSingleLayer(node.layer, "html", "selected");
+	        }
+	    },/*{
+	        text: "Clear Selected",
+	        handler: function () {
+	        	var node = layersPanel.getSelectionModel().getSelectedNode();
+				console.log(node);
+	        }
+	    },*/{
 	        text: "Remove Layer",
 	        handler: function () {
 	        	var node = layersPanel.getSelectionModel().getSelectedNode();
 	        	RemoveLayer(node.layer);
+	        	//console.log(activeLayer);
+	        /*	if (activeLayer != undefined)
+	        		console.log("activeLayer name: " + activeLayer.name);
+	        	else
+	        		console.log("active is not defined"); */
 	        }
 	    },{
-	        text: "Metadata",
+	        text: "Get the URL of the WFS Server",
+	        handler: function () {
+	        	var node = layersPanel.getSelectionModel().getSelectedNode();
+	        	window.prompt ("Copy to clipboard: Ctrl+C/Cmd+C, Enter", node.layer.protocol.url);
+	        }
+	    },{
+	        text: "Layer Metadata",
 	        handler: function () {
 	            if (!winContext) {
 	                var node = layersPanel.getSelectionModel().getSelectedNode();
@@ -46,7 +88,7 @@ function CreateContextMenu(){
 	                    buttons: [{
 	                        text: 'Close',
 	                            handler: function () {
-	                                winContext.hide()
+	                                winContext.hide();
 	                            }
 	                        }]
 	                    });
@@ -55,12 +97,12 @@ function CreateContextMenu(){
 	        },
 	        scope: this
 		}]
-	})
+	});
 }
  
 // Create the text for the Metadata window       
 function CreateMetadata(layer) {
-	var items = []
+	var items = [];
 	
 	if (layer.isBaseLayer == true) {
 		items.push({
@@ -70,11 +112,11 @@ function CreateMetadata(layer) {
 		});
 	}
 	else {	
-		var html = "<b><u> Service Identification </u></b> <br>"
-		html = GetKeys(layer.cap.serviceIdentification, html)
-		html += "<br>"
-		html += "<b><u> Service Provider </u></b> <br>"
-		html = GetKeys(layer.cap.serviceProvider, html)
+		var html = "<b><u> Service Identification </u></b> <br>";
+		html = GetKeys(layer.cap.serviceIdentification, html);
+		html += "<br>";
+		html += "<b><u> Service Provider </u></b> <br>";
+		html = GetKeys(layer.cap.serviceProvider, html);
 
 		items.push({
 			xtype: 'panel',
@@ -88,7 +130,7 @@ function CreateMetadata(layer) {
 // Loop through the keys printing the key and its value, or subkeys if the key is an object
 function GetKeys(obj, html) {
 	for (var key in obj) {
-		keyPrint = FixKeyFormat(key)
+		keyPrint = FixKeyFormat(key);
 		if (obj.hasOwnProperty(key)) {
 			if (obj[key] instanceof Object == false) {
 				html += "<b>" + keyPrint + "</b>: " + obj[key] + "<br>";
@@ -106,7 +148,7 @@ function GetKeys(obj, html) {
 // Loop through the subkeys printing the subkey and its value, or subkeys if the subkey is an object
 function GetSubKeys(obj, html) {
 	for (var prop in obj) {
-		propPrint = FixKeyFormat(prop)
+		propPrint = FixKeyFormat(prop);
 		if (obj.hasOwnProperty(prop)) {
 			if (obj[prop] instanceof Object == false) {
 				html += "&nbsp;&nbsp;&nbsp;&nbsp;" + propPrint + ": " + obj[prop] + "<br>";
@@ -133,44 +175,26 @@ function FixKeyFormat(s) {
 function RemoveLayer(layer) {
 	
 	if (layer.isBaseLayer == false) {
-		UpdateLayers(layer);
-		// Remove all features from layer
+		ToggleLegend("close");
+
+		// Get the index of the additional layer creation for selection
+		index = map.layers.indexOf(layer);
+		selLayer = map.layers[index + 1];
+
+		// Remove the layers
 		layer.removeAllFeatures();
 		map.removeLayer(layer, false);
+		selLayer.removeAllFeatures();
+		map.removeLayer(selLayer, false);
+		
+		// If the layer being removed was the active layer, activeLayer is now undefined
+		if (layer == activeLayer)
+			activeLayer = undefined;
+
+		// Fix the zoom
 		ResetLayersExtent();
 		ZoomToLayersExtent();
 	}
-	else {
+	else
 		alert("Can't remove a baselayer.");
-	}
-}
-
-function UpdateLayers(layer) {
-	//console.log(checkedLayers.length+" layers before remove");
-	// If the layer being removed is checked
-		if (IsIn(checkedLayers, layer) == true) {
-			//console.log(checkedFeatures);
-			
-			// Remove activeLayer from checkedLayers array
-			checkedLayers.splice(checkedLayers.indexOf(layer), 1);
-			ToggleLegend();
-			
-			// Remove features in activeLayer from checkedFeatures array
-			for (var i=0; i < checkedFeatures.length; i++) {
-				if (checkedFeatures[i].layer.name == layer.name) {
-					checkedFeatures.splice(i, 1);
-					i--;
-				}
-			}
-		}
-		//console.log(checkedLayers.length+" layers after remove");
-		//console.log(checkedFeatures);
-		
-		// Remove features in activeLayer from selFeatures array
-		for (var i=0; i < selFeatures.length; i++) {
-			if (selFeatures[i].layer.name == layer.name) {
-				selFeatures.splice(i, 1);
-				i--;
-			}
-		}		
 }

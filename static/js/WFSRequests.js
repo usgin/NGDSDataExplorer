@@ -26,28 +26,20 @@ function GetCapabilities(baseUrl){
 				// Response OK
 				if (resp.status == 200) {
 					// Format the response as WFS Capabilities
-					var CapFormat = new OpenLayers.Format.WFSCapabilities();
-					var cap = CapFormat.read(resp.responseText);
-					//console.log(cap)
-					if (cap.error.success != undefined) {
-						if (cap.error.success == false)
-							alert("There was a problem with " + baseUrl + ". Try again later.");
-					}
-					else {	
-						// Get the feature layers
+					var capFormat = new OpenLayers.Format.WFSCapabilities();
+					var cap = capFormat.read(resp.responseText);
+					if (cap == undefined)
+						alert("There was a problem with " + baseUrl + ". Try again later.");
+					// Get the feature layers
+					else
 						GetLayers(cap, baseUrl)
-					}
-					
-					//console.log(wfsLayers);
 				}
-				else if (resp.status == 404){
+				else if (resp.status == 404)
 					alert("Unable to reach " + baseUrl + ". Try again later.");
-				}
-				else{
+				else
 					alert("Unable to reach " + baseUrl + ". Try again later.");
-				}
 			}
-		})
+		});
 	}
 	catch (e) {
 		Ready();
@@ -75,16 +67,31 @@ function GetLayers(cap, baseUrl){
 		
 			var r = true;
 			if (hits > 2500)
-				r = confirm("There are "+hits+" "+featureName+" features. They make take awhile to draw.\n-Hit cancel\n-Zoom to a smaller area\n-Turn on the set extent toggle on the toolbar.\n-Select the layer again.\nOr hit OK to attempt to draw anyway.");
+				r = confirm("There are " + hits + " " + featureName + " features. They make take awhile to draw.\n-Hit cancel\n-Zoom to a smaller area\n-Turn on the set extent toggle on the toolbar.\n-Select the layer again.\nOr hit OK to attempt to draw anyway.");
 			if (hits == 0){
 				if (bounds != undefined)
-					alert("There were 0 "+featureName+"s features returned. Try changing the set extent or turn off the set extent toggle on the toolbar.");
+					alert("There were 0 " + featureName + " features returned. Try changing the set extent or turn off the set extent toggle on the toolbar.");
 				else
-					alert("There were 0 "+featureName+"s features returned. There may be a problem with the server.");
+					alert("There were 0 " + featureName + " features returned. There may be a problem with the server.");
 				r = false;
 			}
+			
+		/*	wmsOptions = {
+	            transparent: true,
+	            layers: featureName,
+				format: 'image/png'
+	          };
+      		layerOptions = {
+	            isBaseLayer: false
+	          };		
+	        console.log(baseUrl);
+	        wmsUrl = baseUrl.replace("WFSServer","WMSServer?SRS=EPSG:3857");
+	        console.log(wmsUrl);
+			wmsLayer = new OpenLayers.Layer.WMS(featureName+" ("+dataServiceTitle+") WMS", wmsUrl, wmsOptions, layerOptions);
+			map.addLayer(wmsLayer);	 */
 
 			if (r == true) {
+				
 				// Create the server request for the layer
 				wfsLayers[l] = new OpenLayers.Layer.Vector(featureName+" ("+dataServiceTitle+")", {
 					strategies: [new OpenLayers.Strategy.Fixed()],
@@ -101,6 +108,9 @@ function GetLayers(cap, baseUrl){
 					styleMap: SetStyle(),
 					visibility: true
 				});
+				
+		//		if (wfsLayers[l].features.length == 0)
+		//			alert("There were 0 " + featureName + " features returned for this layer. Try loading the layer again.");
 				//console.log(bounds);
 				if (bounds != undefined) {
 					bboxFilter = new OpenLayers.Filter.Spatial({
@@ -109,11 +119,7 @@ function GetLayers(cap, baseUrl){
 					});
 					wfsLayers[l].filter = bboxFilter;
 				}
-				wfsLayers[l].cap = cap;
-				map.addLayer(wfsLayers[l]);
-				MakeSelectable();
-				//console.log(map);
-				
+
 				// Set the number of features as the title in the legend
 				wfsLayers[l].events.register("featureadded", wfsLayers[l], function (e) {
 					e.object.styleMap.styles.default.rules[0].title = e.object.features.length.toString() + " features";
@@ -121,25 +127,32 @@ function GetLayers(cap, baseUrl){
 				
 				// Set the cursor to busy while the layer is loading
 				wfsLayers[l].events.register("loadstart", wfsLayers[l], function (e) {
+					//console.log("Load Start " + e.object.name);
 					Busy();
 				});
 				
 				// Set the cursor back to the default after layer has been loaded
 				wfsLayers[l].events.register("loadend", wfsLayers[l], function (e) {
+					//console.log("Load End " + e.object.name);
 					Ready();
 					
-					// Set the maximum bounds for all the loaded layers & Zoom to those bounds
-					SetLayersExtent(e.object);
-					ZoomToLayersExtent();				
-
-					if ((e.object == undefined) || (e.object.features.length == 0)) {
-						alert(featureName+" wasn't loaded correctly. Try again.");
-						//map.removeLayer(e.object);
-						//activeLayer = undefined;
-						//l--;
-						//console.log(wfsLayers);
+					//console.log(e);
+					//console.log(e.object);
+					if ((e.object == undefined) || (e.object.features.length == 0))
+						alert(featureName + " wasn't loaded correctly. Try again.");
+					else {
+						// Set the maximum bounds for all the loaded layers & Zoom to those bounds
+						SetLayersExtent(e.object);
+						
+						// Only zoom if the Set Extent toggle is not pressed
+						if (bounds == undefined)
+							ZoomToLayersExtent();	
 					}
 				});
+
+				map.addLayer(wfsLayers[l]);
+				wfsLayers[l].cap = cap;
+				MakeSelectable();
 				
 				l++;
 			}
@@ -208,31 +221,37 @@ function GetSubregion(featureType) {
 	var featBoundsBox =  new OpenLayers.Bounds(featureType.bounds.left, featureType.bounds.bottom, featureType.bounds.right, featureType.bounds.top);
 	// Transform
 	featBoundsBox = featBoundsBox.transform(wgs84, googleMercator);
-	
+	//console.log(featureType);
 	// Draw orange highlight for bounding box
 /*	var boxLayers;
-	boxLayers = new OpenLayers.Layer.Vector(featureType.name + " Box");
+	boxLayers = new OpenLayers.Layer.Vector(featureType.name + " bounds");
 	var box = new OpenLayers.Feature.Vector(featBoundsBox.toGeometry());
 	boxLayers.addFeatures(box);
 	map.addLayer(boxLayers); */
 	
 	// Outline bounding box in red
-/*	var boxes  = new OpenLayers.Layer.Boxes(featureType.name + " Box");
+/*	var boxes  = new OpenLayers.Layer.Boxes(featureType.name + " bounds");
 	var box = new OpenLayers.Marker.Box(featBoundsBox);
 	boxes.addMarker(box);
-	map.addLayer(boxes); */
+	map.addLayer(boxes);*/
 
 	// Zoom to the bounds
-	map.zoomToExtent(featBoundsBox);
+//	map.zoomToExtent(featBoundsBox);
 }
 
 // Set the maximum bounds for all the loaded layers 
-function SetLayersExtent(obj) {
+function SetLayersExtent(lyr) {
+	
 	// Get the bounds for the current layer
-	var curLeftB = obj.getDataExtent().left;
-	var curRightB = obj.getDataExtent().right;
-	var curTopB = obj.getDataExtent().top;
-	var curBottomB = obj.getDataExtent().bottom;
+	try {
+		var curLeftB = lyr.getDataExtent().left;
+		var curRightB = lyr.getDataExtent().right;
+		var curTopB = lyr.getDataExtent().top;
+		var curBottomB = lyr.getDataExtent().bottom;
+	}
+	catch (e){
+		
+	}
 	
 	// Set the max bound as the current bound if it's undefined
 	if (maxLeftB == undefined)
@@ -265,9 +284,8 @@ function ResetLayersExtent() {
 	// Get the extent of loaded layers
 	for (var i = 0; i < map.layers.length; i++) {
 		if (map.layers[i].isBaseLayer != true) {
-			if (map.layers[i].features.length != 0) {
+			if (map.layers[i].features.length != 0)
 				SetLayersExtent(map.layers[i]);
-			}
 		}
 	}
 	
@@ -278,9 +296,10 @@ function ResetLayersExtent() {
 
 // Zoom to the extent of all of the loaded layers
 function ZoomToLayersExtent() {
-	// Create the bounding box with the max bounds
-	var maxBoundsBox =  new OpenLayers.Bounds(maxLeftB, maxBottomB, maxRightB, maxTopB);
-	// Zoom to the max bounds
-	map.zoomToExtent(maxBoundsBox);
-	//console.log(maxLeftB + ", " + maxBottomB + ", " + maxRightB + ", " + maxTopB);
+	if (maxLeftB != undefined || maxRightB != undefined || maxTopB != undefined || maxBottomB != undefined) {
+		// Create the bounding box with the max bounds
+		var maxBoundsBox =  new OpenLayers.Bounds(maxLeftB, maxBottomB, maxRightB, maxTopB);
+		// Zoom to the max bounds
+		map.zoomToExtent(maxBoundsBox);
+	}
 }

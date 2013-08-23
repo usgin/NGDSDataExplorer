@@ -22,36 +22,6 @@ function SearchForm(){
 		text: 'AASG Geothermal Data Catalog'
 	}]);
 	
-	// Create the Catalog Services drop-down menu
-	// Defaults to 'http://catalog.stategeothermaldata.org/geoportal/csw?'
-	/*searchItems.push([{
-		width: 			188,
-		xtype:          'combo',
-		mode:           'local',
-		value:          'http://catalog.stategeothermaldata.org/geoportal/csw?',
-		triggerAction:  'all',
-		forceSelection: false,
-		editable:       false,       
-		//labelWidth: 	0,		
-		//fieldLabel:     'Title',
-		name:           'title',
-		displayField:   'name',
-		valueField: 	'value',
-		store: 			new Ext.data.JsonStore({
-			fields: ['name', 'value'],
-			data: [
-				{name: 'USGIN AASG Geothermal Data Catalog', value: 'http://catalog.stategeothermaldata.org/geoportal/csw?'},
-				{name: 'Test', value: 'http://wygl.wygisc.org/wygeolib/csw/discovery?'}
-			]
-		}),
-		listeners: {
-			'select': function(combo, record){
-				//console.log(record.data.name);
-				searchCatService = record.data.value;
-			}
-		}
-	}]);*/
-	
 	// Create the search field selection drop-down box
 	// Defaults to 'Any Text'
 	searchItems.push([{
@@ -112,7 +82,7 @@ function SearchForm(){
 				useVisibleExtent = elem.checked;
 			}
 		}
-	}])
+	}]);
 	
 	return searchItems;
 }
@@ -165,10 +135,10 @@ function CreateSearchBBar(){
 			text: 'Add Layer',
 			tooltip: 'Add selected service to layers list',
 			handler: function () {
-				GetDataServices()
+				GetDataServices();
 			}
 		}]
-	})
+	});
 }
 
 function GetDataServices() {

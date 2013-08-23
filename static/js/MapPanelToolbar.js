@@ -8,9 +8,7 @@
 /		- clear selected
 /		- show popups
 /		- measure
-/		- wfs url
-/		- create table (see Export.js)
-/		- create csv (see Export.js)
+/		- merge & view data (see Export.js)
 /		- help (see Help.js)
 /************************************************************************************************************************************************/
 
@@ -31,29 +29,12 @@ var ctrl, action, toolbarItems = [], actions = {};
 			}
 		},
         map: map,
-        text: "zoom extent",
+        text: "Zoom Extent",
         tooltip: "Zoom to the maximum extent of all layers, regardless of whether the layer is turned on or off."
     });
     actions["max_extent"] = action;
     toolbarItems.push(action);
     toolbarItems.push("-");
-
-	// Zoom to active layer						   
-/*    action = new GeoExt.Action({
-		handler: function () {
-			if (activeLayer != undefined)
-				map.zoomToExtent(activeLayer.getDataExtent());	
-			else
-				alert("Select a layer.");
-		},
-        map: map,
-		disabled: false,
-        text: "zoom layer",
-        tooltip: "Zoom to layer highlighted in layers list."
-    });
-    actions["zoom_layer"] = action;
-    toolbarItems.push(action);
-    toolbarItems.push("-");*/
 	
 	// Navigation history
     ctrl = new OpenLayers.Control.NavigationHistory();
@@ -61,7 +42,7 @@ var ctrl, action, toolbarItems = [], actions = {};
 
 	// Move map to previous view
     action = new GeoExt.Action({
-        text: "previous",
+        text: "Previous View",
         control: ctrl.previous,
         disabled: true,
         tooltip: "Previous in view history."
@@ -71,7 +52,7 @@ var ctrl, action, toolbarItems = [], actions = {};
 
 	// Move map to next view in history
     action = new GeoExt.Action({
-        text: "next",
+        text: "Next View",
         control: ctrl.next,
         disabled: true,
         tooltip: "Next in view history."
@@ -83,7 +64,7 @@ var ctrl, action, toolbarItems = [], actions = {};
 	// Set the map extent
 	action = new Ext.Action({ 
 		id: "setExtentBtn",
-        text: "set extent",
+        text: "Set Extent",
         tooltip: "Only new features within the current map extent will be added when a new layer is loaded.",
         map: map,
 		hidden: false,
@@ -101,7 +82,7 @@ var ctrl, action, toolbarItems = [], actions = {};
 
 	// Button to allow for selection of mulitple features by drawing a box     
 	action = new Ext.Action({ 
-        text: "select box",
+        text: "Select Box",
         tooltip: "Draw a box to select multiple features.",
 		id: "select_box",
 		enableToggle: true, 
@@ -140,16 +121,12 @@ var ctrl, action, toolbarItems = [], actions = {};
 
 	// Button to clear all selected features
 	action = new GeoExt.Action({ 
-        text: "clear selected",
+        text: "Clear Selected",
         tooltip: "Clear all selected features.",
         map: map,		
 		handler: function(item, pressed) {
-			if (selectCtrl != undefined) {
-				selectCtrl.unselectAll();	
-				selFeatures = [];
-				if (activeLayer != undefined)
-					activeFeatures = activeLayer.features;
-			}
+			if (selectCtrl != undefined)
+				selectCtrl.unselectAll();
 		}
     });
     actions["clear_selected"] = action;
@@ -158,7 +135,7 @@ var ctrl, action, toolbarItems = [], actions = {};
 	
 	// Button to turn on/off popups       
 	action = new Ext.Action({ 
-        text: "show popups",
+        text: "Show Popups",
         tooltip: "Show popups with feature data.",
 		id: "show_popups",
 		enableToggle: true, 
@@ -178,7 +155,7 @@ var ctrl, action, toolbarItems = [], actions = {};
 				showPopups = false;
 				
 				//get all existing popups
-				var popups = Ext.WindowMgr.getBy(function(win){return (win instanceof GeoExt.Popup)});
+				var popups = Ext.WindowMgr.getBy(function(win){return (win instanceof GeoExt.Popup);});
 
 				//kill all existing popups
 				for (var i =0; i < popups.length; i++)
@@ -192,7 +169,7 @@ var ctrl, action, toolbarItems = [], actions = {};
 	
 	// Measure a distance
 	action = new Ext.Action({ 
-        text: "measure",
+        text: "Measure",
         tooltip: "Measure a distance.",
 		id: "measure",
         enableToggle: true, 
@@ -216,27 +193,15 @@ var ctrl, action, toolbarItems = [], actions = {};
     actions["measure"] = action;
     toolbarItems.push(action);
 	toolbarItems.push("-");	
+
 	
-	// Copy WFS URL
-	action = new GeoExt.Action({
-		text: "wfs url",
-		tooltip: "Copy the URL of the WFS for the highlighted layer.",
-		map: map,
-		handler: function(item, pressed) {
-			window.prompt ("Copy to clipboard: Ctrl+C/Cmd+C, Enter", activeLayer.protocol.url);
-		}
-	});
-	actions["wfs_url"] = action;
-	toolbarItems.push(action);	
-	toolbarItems.push("-");	
-	
-	// Create an html table
+/*	// Create an html table
 	action = new Ext.Button({ 
         text: "create table",
         tooltip: "Create html table of selected features from checked layer. If more than one layer is checked use column headers of highlighted layer.",
         map: map,
 		handler: function(item, pressed) {
-			ExportData("html");		
+			ExportData("html");
 		}
     });
     actions["create_html"] = action;
@@ -256,7 +221,38 @@ var ctrl, action, toolbarItems = [], actions = {};
     });
     actions["create_html"] = action;
     toolbarItems.push(action);
-	// toolbarItems.push("-");
+	toolbarItems.push("-");
+*/
+	// Merge & View data drop-down menu
+	action = new GeoExt.Action({
+        text: "Merge Data & Export",
+        tooltip: "Merge data from checked layers into one table or a downloadable CSV.",
+		menu: new Ext.menu.Menu({
+			items: [{
+				text: "All Features of Checked Layers to a CSV",
+				handler: function(button, evt) {
+					ExportMultipleLayers("csv", "all");
+				}
+			},{
+				text: "All Features of Checked Layers to a Table",
+				handler: function(button, evt) {
+					ExportMultipleLayers("html", "all");
+				}
+			},{
+				text: "Selected Features of Checked Layers to a CSV",
+				handler: function(button, evt) {
+					ExportMultipleLayers("csv", "selected");
+				}
+			},{
+				text: "Selected Features of Checked Layers to a Table",
+				handler: function(button, evt) {
+					ExportMultipleLayers("html", "selected");
+				}
+			}]
+		})
+    });
+	actions["MergeAndView"] = action;
+    toolbarItems.push(action);
 
     toolbarItems.push("->");	
 	
@@ -294,6 +290,7 @@ function SetMapExtent() {
 	map.getExtent();
 	var curBounds = map.getExtent();
 	bounds = curBounds.transform(googleMercator, wgs84);
+	//console.log(bounds);
 }
  
 // Create a popup to display the data of the selected feature
@@ -349,7 +346,7 @@ function CreateMeasurementCtrl() {
 	style.addRules([
 		new OpenLayers.Rule({symbolizer: sketchSymbolizers})
 	]);
-	var styleMap = new OpenLayers.StyleMap({"default": style})
+	var styleMap = new OpenLayers.StyleMap({"default": style});
 
 	measureCtrl = new OpenLayers.Control.Measure(
 		OpenLayers.Handler.Path, {
