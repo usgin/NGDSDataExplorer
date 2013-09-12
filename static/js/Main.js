@@ -116,7 +116,7 @@ Ext.onReady(function() {
 	var mapPanel = new GeoExt.MapPanel({
 		region: "center",
 		id: "mappanel",
-		title: "Map Viewer",
+		title: "NGDS Data Explorer",
 		xtype: "gx_mappanel",
 		map: map,
 		layers: [gmap, ghyb, gter],
@@ -196,7 +196,7 @@ Ext.onReady(function() {
 	// The search panel which contains the form and the grid
     var searchPanel = new Ext.Panel({
 		id: 'search-panel',
-        title: 'Search Catalog',
+        title: 'Search the Catalog',
         region: 'north',
 		width: 200,
 		height: 320,
@@ -267,7 +267,8 @@ Ext.onReady(function() {
 	var westPanel = new Ext.Panel({
 		region: "west",
 		id: 'layout-browser',
-		title: 'NGDS Data Explorer',
+		title: "<a target=\"_new\" href=\"http://geothermaldata.org/\"><img src=\"/static/images/75-ngds-logo.png\" width=\"190\" height=\"40\"/>",
+		//title: 'NGDS Data Explorer',
 		layout: 'border',
 		//layout: 'anchor',
 		border: false,
@@ -275,7 +276,8 @@ Ext.onReady(function() {
 		collapsible: true,
 		margins: '2 0 5 5',
 		width: 200,
-		items: [searchPanel, layersPanel]
+		items: [searchPanel, 
+			layersPanel]
 	});
  
 	// The Legend Panel
