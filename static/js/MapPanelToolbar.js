@@ -30,6 +30,7 @@ var ctrl, action, toolbarItems = [], actions = {};
 		},
         map: map,
         text: "Zoom Extent",
+        icon: 'static/images/zoom-extent-icon.png',
         tooltip: "Zoom to the maximum extent of all layers, regardless of whether the layer is turned on or off."
     });
     actions["max_extent"] = action;
@@ -42,7 +43,9 @@ var ctrl, action, toolbarItems = [], actions = {};
 
 	// Move map to previous view
     action = new GeoExt.Action({
-        text: "Previous View",
+        // text: "Previous View",
+        icon: 'static/images/page-prev.gif',
+        text: "Views",
         control: ctrl.previous,
         disabled: true,
         tooltip: "Previous in view history."
@@ -52,7 +55,8 @@ var ctrl, action, toolbarItems = [], actions = {};
 
 	// Move map to next view in history
     action = new GeoExt.Action({
-        text: "Next View",
+        // text: "Next View",
+      	icon: 'static/images/page-next.gif',
         control: ctrl.next,
         disabled: true,
         tooltip: "Next in view history."
@@ -65,6 +69,7 @@ var ctrl, action, toolbarItems = [], actions = {};
 	action = new Ext.Action({ 
 		id: "setExtentBtn",
         text: "Set Extent",
+        icon: 'static/images/set-extent-icon.png',
         tooltip: "Only new features within the current map extent will be added when a new layer is loaded.",
         map: map,
 		hidden: false,
@@ -83,6 +88,7 @@ var ctrl, action, toolbarItems = [], actions = {};
 	// Button to allow for selection of mulitple features by drawing a box     
 	action = new Ext.Action({ 
         text: "Select Box",
+        icon: 'static/images/select-box-icon.png',
         tooltip: "Draw a box to select multiple features.",
 		id: "select_box",
 		enableToggle: true, 
@@ -122,6 +128,7 @@ var ctrl, action, toolbarItems = [], actions = {};
 	// Button to clear all selected features
 	action = new GeoExt.Action({ 
         text: "Clear Selected",
+        icon: 'static/images/clear-select-icon.png',
         tooltip: "Clear all selected features.",
         map: map,		
 		handler: function(item, pressed) {
@@ -135,8 +142,9 @@ var ctrl, action, toolbarItems = [], actions = {};
 	
 	// Button to turn on/off popups       
 	action = new Ext.Action({ 
-        text: "Show Popups",
-        tooltip: "Show popups with feature data.",
+        // text: "Show Popups",
+        icon: 'static/images/information.png',
+        tooltip: "Identify feature.",
 		id: "show_popups",
 		enableToggle: true, 
 		toggleHandler: function(button, state) {
@@ -169,7 +177,8 @@ var ctrl, action, toolbarItems = [], actions = {};
 	
 	// Measure a distance
 	action = new Ext.Action({ 
-        text: "Measure",
+        // text: "Measure",
+        icon: 'static/images/ruler.png',
         tooltip: "Measure a distance.",
 		id: "measure",
         enableToggle: true, 
@@ -194,35 +203,6 @@ var ctrl, action, toolbarItems = [], actions = {};
     toolbarItems.push(action);
 	toolbarItems.push("-");	
 
-	
-/*	// Create an html table
-	action = new Ext.Button({ 
-        text: "create table",
-        tooltip: "Create html table of selected features from checked layer. If more than one layer is checked use column headers of highlighted layer.",
-        map: map,
-		handler: function(item, pressed) {
-			ExportData("html");
-		}
-    });
-    actions["create_html"] = action;
-    toolbarItems.push(action);
-	toolbarItems.push("-");	
-	
-	// Create csv file
-	action = new Ext.Button({ 
-        text: "create csv",
-        tooltip: "Create a csv file of selected features from checked layer. If more than one layer is checked use column headers of highlighted layer.",
-        map: map,
-		handler: function(item, pressed) {
-			var madeFile = ExportData("csv");
-			if (madeFile == true)
-				window.open('/files/data.csv', '_blank');			
-		}
-    });
-    actions["create_html"] = action;
-    toolbarItems.push(action);
-	toolbarItems.push("-");
-*/
 	// Merge & View data drop-down menu
 	action = new GeoExt.Action({
         text: "Merge Data & Export",
@@ -230,21 +210,25 @@ var ctrl, action, toolbarItems = [], actions = {};
 		menu: new Ext.menu.Menu({
 			items: [{
 				text: "All Features of Checked Layers to a CSV",
+				icon: 'static/images/excel-icon.png',
 				handler: function(button, evt) {
 					ExportMultipleLayers("csv", "all");
 				}
 			},{
 				text: "All Features of Checked Layers to a Table",
+				icon: 'static/images/table-icon.png',
 				handler: function(button, evt) {
 					ExportMultipleLayers("html", "all");
 				}
 			},{
 				text: "Selected Features of Checked Layers to a CSV",
+				icon: 'static/images/excel-icon.png',
 				handler: function(button, evt) {
 					ExportMultipleLayers("csv", "selected");
 				}
 			},{
 				text: "Selected Features of Checked Layers to a Table",
+				icon: 'static/images/table-icon.png',
 				handler: function(button, evt) {
 					ExportMultipleLayers("html", "selected");
 				}
@@ -259,20 +243,24 @@ var ctrl, action, toolbarItems = [], actions = {};
 	// Help drop-down menu
 	action = new GeoExt.Action({
         text: "Help",
+        icon: "static/images/help_icon.png",
         tooltip: "Help",
 		menu: new Ext.menu.Menu({
 			items: [{
 				text: "Using this application",
+				icon: "static/images/help_icon.png",
 				handler: function(button, evt) {
 					HelpUsingApp();
 				}
 			},{
 				text: "Report Bugs / Request Features",
+				icon: "static/images/email_add.png",
 				handler: function(button, evt) {
 					HelpBugsFeatures();
 				}
 			},{
 				text: "About",
+				icon: "static/images/ngds-icon.png",
 				handler: function(button, evt) {
 					HelpAbout();
 				}

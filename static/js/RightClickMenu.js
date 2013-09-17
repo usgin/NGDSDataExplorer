@@ -16,6 +16,7 @@ function CreateContextMenu(){
 	return new Ext.menu.Menu({
 	    items: [{
 	        text: "Zoom to Layer Extent",
+	        icon: 'static/images/zoom-layer-icon.png',
 	        handler: function () {
 	            var node = layersPanel.getSelectionModel().getSelectedNode();
 	            if (node && node.layer) {
@@ -25,24 +26,28 @@ function CreateContextMenu(){
 	        scope: this
 	    },{
 	        text: "Export All Features to a CSV",
+	        icon: 'static/images/excel-icon.png',
 	        handler: function () {
 	        	var node = layersPanel.getSelectionModel().getSelectedNode();
 	        	ExportSingleLayer(node.layer, "csv", "all");
 	        }
 	    },{
 	        text: "Export All Features to a Table",
+	        icon: 'static/images/table-icon.png',
 	        handler: function () {
 	        	var node = layersPanel.getSelectionModel().getSelectedNode();
 	        	ExportSingleLayer(node.layer, "html", "all");
 	        }
 	    },{
 	        text: "Export Selected Features to a CSV",
+	        icon: 'static/images/excel-icon.png',
 	        handler: function () {
 	        	var node = layersPanel.getSelectionModel().getSelectedNode();
 	        	ExportSingleLayer(node.layer, "csv", "selected");
 	        }
 	    },{
 	        text: "Export Selected Features to a Table",
+	        icon: 'static/images/table-icon.png',
 	        handler: function () {
 	        	var node = layersPanel.getSelectionModel().getSelectedNode();
 	        	ExportSingleLayer(node.layer, "html", "selected");
@@ -55,6 +60,7 @@ function CreateContextMenu(){
 	        }
 	    },*/{
 	        text: "Remove Layer",
+	        icon: 'static/images/remove-layer-icon.png',
 	        handler: function () {
 	        	var node = layersPanel.getSelectionModel().getSelectedNode();
 	        	RemoveLayer(node.layer);
@@ -66,12 +72,14 @@ function CreateContextMenu(){
 	        }
 	    },{
 	        text: "Get the URL of the WFS Server",
+	        icon: 'static/images/link.png',
 	        handler: function () {
 	        	var node = layersPanel.getSelectionModel().getSelectedNode();
 	        	window.prompt ("Copy to clipboard: Ctrl+C/Cmd+C, Enter", node.layer.protocol.url);
 	        }
 	    },{
 	        text: "Layer Metadata",
+	        icon: 'static/images/metadata-icon.png',
 	        handler: function () {
 	            if (!winContext) {
 	                var node = layersPanel.getSelectionModel().getSelectedNode();

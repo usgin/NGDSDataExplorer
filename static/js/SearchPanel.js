@@ -14,13 +14,13 @@
 function SearchForm(){
 	var searchItems = [];
 	
-	// State the catalog being searched
+/*	// State the catalog being searched
 	searchItems.push([{
 		width: 188, 
 		xtype: 'label',
 		fieldLabel: 'catalog',
 		text: 'AASG Geothermal Data Catalog'
-	}]);
+	}]);*/
 	
 	// Create the search field selection drop-down box
 	// Defaults to 'Any Text'
@@ -103,11 +103,11 @@ function SearchButton () {
 function DoSearch() {
 	// Remove leading and trailing whitespace and wildcards
 	searchTerm = searchTerm.trim();
-	searchTerm = searchTerm.replace("*", "");
+	//searchTerm = searchTerm.replace("*", "");
 	if (searchTerm == "")
 		alert("Enter a search term.");
-	else if (searchTerm == "*")
-		alert("Too many results. Enter a search term.");
+	//else if (searchTerm == "*")
+	//	alert("Too many results. Enter a search term.");
 	else {
 		// If there is more than one search term and they are not separated by an AND or OR already
 		// then add an AND between the words

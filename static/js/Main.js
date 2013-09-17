@@ -140,7 +140,7 @@ Ext.onReady(function() {
 	var formPanel = new Ext.FormPanel({
 		id: 'form-panel',
         region: 'north',
-		height: 135,
+		height: 110,
 		hideLabels: true,
 		items: [SearchForm()],
 		buttons: [SearchButton()],
@@ -199,7 +199,7 @@ Ext.onReady(function() {
         title: 'Search the Catalog',
         region: 'north',
 		width: 200,
-		height: 320,
+		height: 295,
 		autoScroll: true,
 		collapsible: true,
 		collapsed: false,

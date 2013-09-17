@@ -82,14 +82,14 @@ function CreateDataServicesToolbar(){
 	
 	// Create a button to open the Base Url input box
 	dataServicesToolbar.push([{
-		text: "Url",
-	    //icon: '../lib/ext-3.4.0/examples/menu/list-items.gif',
-        cls: 'x-btn-icon',
-        tooltip: 'Enter a base url.',
+		// text: "Url",
+		icon: 'static/images/add-link-icon.png',
+        tooltip: 'Enter the base url of a WFS to add to the map.',
 		menu: new Ext.menu.Menu({
 			items: [{
-				text: 'Enter a base url, e.g. http://services.azgs.az.gov/arcgis/services/aasggeothermal/CAaqSpringChemistry/MapServer/WFSServer'
+				text: 'Enter a base WFS url, e.g. http://services.azgs.az.gov/arcgis/services/aasggeothermal/CAaqSpringChemistry/MapServer/WFSServer'
 			},{
+				icon: 'static/images/add-link-icon.png',
 				xtype:'textfield',
 				fieldLabel: 'Base Url',
 				name: 'baseUrl',
