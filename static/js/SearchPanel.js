@@ -57,7 +57,7 @@ function SearchForm(){
 	searchItems.push([{
 		width: 188, 
 		fieldLabel: 'Search Term',
-		value: 'Enter Search Term',
+		value: 'Enter Search Term or *',
         name: 'first',
 		xtype: 'textfield',
 		selectOnFocus: true,
@@ -103,11 +103,8 @@ function SearchButton () {
 function DoSearch() {
 	// Remove leading and trailing whitespace and wildcards
 	searchTerm = searchTerm.trim();
-	//searchTerm = searchTerm.replace("*", "");
 	if (searchTerm == "")
 		alert("Enter a search term.");
-	//else if (searchTerm == "*")
-	//	alert("Too many results. Enter a search term.");
 	else {
 		// If there is more than one search term and they are not separated by an AND or OR already
 		// then add an AND between the words

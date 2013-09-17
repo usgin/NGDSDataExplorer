@@ -16,7 +16,7 @@ This program contains the following components:<br>
 <b>4. Legend Panel</b><br><br>
 
 <b><u>1. Search Catalog Panel</u></b><br>
-The Catalog Search allows for the search of the AASG Geothermal Data Catalog for features which can be mapped and queried. Select the type of search to be performed from the drop-down menu. Enter the search term(s) in the input box. If more than one word is typed in the input box then the AND condition is assumed and every word must be in the result. To specifiy an OR condition type the word OR between words such as \'fault OR spring.\' Check or uncheck the box depending on whether or not the search should only look for data services containing features within the current map extent. Mouseover an item in the resulting list to see a pop-up with more information about the data service. To add the layer(s) from that data service, double-click the data service or click on the data service and then click the Add Layer button below the list.
+The Catalog Search allows for the search of the AASG Geothermal Data Catalog for features which can be mapped and queried. Select the type of search to be performed from the drop-down menu. Enter the search term(s) in the input box.  An asterisk (*) can be used as a wildcard. If more than one word is typed in the input box then the AND condition is assumed and every word must be in the result. To specifiy an OR condition type the word OR between words such as \'fault OR spring.\' Check or uncheck the box depending on whether or not the search should only look for data services containing features within the current map extent. Mouseover an item in the resulting list to see a pop-up with more information about the data service. To add the layer(s) from that data service, double-click the data service or click on the data service and then click the Add Layer button below the list.
 <br><br>
 
 <b><u>2. Layers Panel</u></b><br>
@@ -44,7 +44,7 @@ The Map Panel Toolbar provides additonal functionality for the the Map Panel. It
 &nbsp;<b>Set Extent</b>: Depress to set the working extent of the map to the current view. Any new data services selected will only retrieve features within that extent.<br>
 &nbsp;<b>Select Box</b>: Draw a box to select multiple features. <br>
 &nbsp;<b>Clear Selected</b>: Unselect all selected features.<br>
-&nbsp;<b>Show Popups</b>: When depressed, clicking on a feature will bring up a popup with information about that feature. Close the popup window by clicking the feature again or by clicking the x in the corner of the popup window. Close all open popups by undepressing the show popups toggle button.<br>
+&nbsp;<b>Identify</b>: When depressed, clicking on a feature will bring up a popup with information about that feature. Close the popup window by clicking the feature again or by clicking the x in the corner of the popup window. Close all open popups by undepressing the Identify toggle button.<br>
 &nbsp;<b>Measure</b>: Click on the map to start a distance measurement. Double-click to finish the measurement and get a popup with the straight-line distance in metric units.<br>
 &nbsp;<b>Merge and View Data</b>: Create a single HTML table or CSV file of data from multiple layers.
 <br><br>
@@ -68,6 +68,7 @@ It uses <a href="http://openlayers.org/">OpenLayers</a>, <a href="http://http://
 <br><br>
 Version 4.2 (September 17, 2013):<br>
 - Added icons and NGDS logo.<br>
+- Added wildcard (*) search.<br>
 <br>
 Version 4.1 (August 23, 2013):<br>
 - Reorganized the map toolbar.<br>

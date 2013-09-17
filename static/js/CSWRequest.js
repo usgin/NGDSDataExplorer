@@ -40,7 +40,7 @@ function GetRecordsCSW(cswUrl) {
 // Create the paramaters to send to the server with CSW request
 function CreateParams() {
 	var startPos = 1;
-	var maxRecords = "10000";
+	var maxRecords = "100000";
 	//searchTerm = "borehole";
 	if (useVisibleExtent == false) {
 		var params = {
@@ -52,7 +52,8 @@ function CreateParams() {
 			elementSetName: "full",
 			startPostion: startPos,
 			maxRecords: maxRecords,
-			constraint: "<ogc:Filter xmlns:ogc='http://www.opengis.net/ogc'><ogc:And><ogc:PropertyIsLike wildCard='*' singleChar='.' escapeChar='!'><ogc:PropertyName>"+searchField+"</ogc:PropertyName><ogc:Literal>"+searchTerm+"</ogc:Literal></ogc:PropertyIsLike></ogc:And></ogc:Filter>",
+			// constraint: "<ogc:Filter xmlns:ogc='http://www.opengis.net/ogc'><ogc:And><ogc:PropertyIsLike wildCard='*' singleChar='.' escapeChar='!'><ogc:PropertyName>"+searchField+"</ogc:PropertyName><ogc:Literal>"+searchTerm+"</ogc:Literal></ogc:PropertyIsLike></ogc:And></ogc:Filter>",
+			constraint: "<Filter xmlns='http://www.opengis.net/ogc' xmlns:gml='http://www.opengis.net/gml'><And><PropertyIsLike wildCard='*' singleChar='.' escape='!'><PropertyName>AnyText</PropertyName><Literal>*WFS*</Literal></PropertyIsLike><PropertyIsLike wildCard='*' singleChar='.' escape='!'><PropertyName>"+searchField+"</PropertyName><Literal>"+searchTerm+"</Literal></PropertyIsLike></And></Filter>",
 			contraintLanguage: "FILTER",
 			sortBy: "dc:title"
 		};
@@ -70,7 +71,8 @@ function CreateParams() {
 			elementSetName: "full",
 			startPostion: startPos,
 			maxRecords: maxRecords,
-			constraint: "<ogc:Filter xmlns:ogc='http://www.opengis.net/ogc'><ogc:And><ogc:And><ogc:PropertyIsLike wildCard='*' singleChar='.' escapeChar='!'><ogc:PropertyName>"+searchField+"</ogc:PropertyName><ogc:Literal>"+searchTerm+"</ogc:Literal></ogc:PropertyIsLike></ogc:And><ogc:BBOX><ogc:PropertyName>apiso:BoundingBox</ogc:PropertyName><gml:Envelope xmlns:gml='http://www.opengis.net/gml' srsName='EPSG:4326'><gml:lowerCorner>"+newBounds.left.toString()+" "+newBounds.bottom.toString()+"</gml:lowerCorner><gml:upperCorner>"+newBounds.right.toString() + " " + newBounds.top.toString()+"</gml:upperCorner></gml:Envelope></ogc:BBOX></ogc:And></ogc:Filter>",
+			// constraint: "<ogc:Filter xmlns:ogc='http://www.opengis.net/ogc'><ogc:And><ogc:And><ogc:PropertyIsLike wildCard='*' singleChar='.' escapeChar='!'><ogc:PropertyName>"+searchField+"</ogc:PropertyName><ogc:Literal>"+searchTerm+"</ogc:Literal></ogc:PropertyIsLike></ogc:And><ogc:BBOX><ogc:PropertyName>apiso:BoundingBox</ogc:PropertyName><gml:Envelope xmlns:gml='http://www.opengis.net/gml' srsName='EPSG:4326'><gml:lowerCorner>"+newBounds.left.toString()+" "+newBounds.bottom.toString()+"</gml:lowerCorner><gml:upperCorner>"+newBounds.right.toString() + " " + newBounds.top.toString()+"</gml:upperCorner></gml:Envelope></ogc:BBOX></ogc:And></ogc:Filter>",
+			constraint: "<Filter xmlns='http://www.opengis.net/ogc' xmlns:gml='http://www.opengis.net/gml'><And><And><PropertyIsLike wildCard='*' singleChar='.' escape='!'><PropertyName>AnyText</PropertyName><Literal>*WFS*</Literal></PropertyIsLike><PropertyIsLike wildCard='*' singleChar='.' escape='!'><PropertyName>"+searchField+"</PropertyName><Literal>"+searchTerm+"</Literal></PropertyIsLike></And><BBOX><PropertyName>apiso:BoundingBox</PropertyName><gml:Envelope xmlns:gml='http://www.opengis.net/gml' srsName='EPSG:4326'><gml:lowerCorner>"+newBounds.left.toString()+" "+newBounds.bottom.toString()+"</gml:lowerCorner><gml:upperCorner>"+newBounds.right.toString() + " " + newBounds.top.toString()+"</gml:upperCorner></gml:Envelope></BBOX></And></Filter>",
 			contraintLanguage: "FILTER",
 			sortBy: "dc:title"
 		};
