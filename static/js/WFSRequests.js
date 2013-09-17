@@ -28,11 +28,11 @@ function GetCapabilities(baseUrl){
 					// Format the response as WFS Capabilities
 					var capFormat = new OpenLayers.Format.WFSCapabilities();
 					var cap = capFormat.read(resp.responseText);
-					if (cap == undefined)
-						alert("There was a problem with " + baseUrl + ". Try again later.");
+					if (cap == undefined || cap.error != undefined)
+						alert("There was a problem with the service at " + baseUrl + ". Try again later.");
 					// Get the feature layers
 					else
-						GetLayers(cap, baseUrl)
+						GetLayers(cap, baseUrl);
 				}
 				else if (resp.status == 404)
 					alert("Unable to reach " + baseUrl + ". Try again later.");
@@ -75,20 +75,6 @@ function GetLayers(cap, baseUrl){
 					alert("There were 0 " + featureName + " features returned. There may be a problem with the server.");
 				r = false;
 			}
-			
-		/*	wmsOptions = {
-	            transparent: true,
-	            layers: featureName,
-				format: 'image/png'
-	          };
-      		layerOptions = {
-	            isBaseLayer: false
-	          };		
-	        console.log(baseUrl);
-	        wmsUrl = baseUrl.replace("WFSServer","WMSServer?SRS=EPSG:3857");
-	        console.log(wmsUrl);
-			wmsLayer = new OpenLayers.Layer.WMS(featureName+" ("+dataServiceTitle+") WMS", wmsUrl, wmsOptions, layerOptions);
-			map.addLayer(wmsLayer);	 */
 
 			if (r == true) {
 				
