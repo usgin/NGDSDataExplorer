@@ -202,7 +202,37 @@ var ctrl, action, toolbarItems = [], actions = {};
     actions["measure"] = action;
     toolbarItems.push(action);
 	toolbarItems.push("-");	
-
+	
+	// Address Lookup
+	action = new Ext.Action({ 
+       // text: "Address Lookup",
+        icon: 'static/images/find.png',
+        tooltip: "Lookup an address.",
+		id: "address",
+		menu: new Ext.menu.Menu({
+			items: [{
+				text: 'Type an address and press Enter.'
+			},{
+			icon: 'static/images/find.png',
+			xtype:'textfield',
+			fieldLabel: 'Address',
+			name: 'address',
+			width: 650,
+			listeners: {
+				'specialkey': function(elem,evnt){
+					// If the 'Enter' key is pressed get the layers for the url
+					if(evnt.getKey() == 13)	{
+						GetAddress(elem.el.dom.value);
+					}
+				}
+			}
+			}]
+		})
+    });
+    actions["measure"] = action;
+    toolbarItems.push(action);
+	toolbarItems.push("-");	
+	
 	// Merge & View data drop-down menu
 	action = new GeoExt.Action({
         text: "Merge Data & Export",
@@ -361,3 +391,19 @@ function handleMeasurements(event) {
 		alert(output);
 		}
 }
+
+// Google Geocoding
+function GetAddress(address) {
+	
+	var geocoder = new google.maps.Geocoder();
+	geocoder.geocode({ 'address': address }, function (results, status) {
+	  	if (status == google.maps.GeocoderStatus.OK) {
+	    	console.log("Geocoding Result: " + results[0].geometry.location);     
+	        map.setCenter(new OpenLayers.LonLat(results[0].geometry.location.kb, results[0].geometry.location.jb).transform(wgs84, googleMercator), 13);                         
+	    }
+	    else {
+	    	console.log("Geocoding failed: " + status);                            
+	    }
+    });
+}
+
