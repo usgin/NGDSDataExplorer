@@ -229,19 +229,19 @@ Ext.onReady(function() {
 		}),
 		listeners: {
 			insert: function(tree, parent, node, refNode) {
-				if (node.layer.isBaseLayer == false)
+				if (node.layer.CLASS_NAME == "OpenLayers.Layer.Vector")
 					ToggleLegend();
 			},
 			// When a layer is clicked
 			click: function(node, e) {
-				if (node.layer.isBaseLayer == false)
+				if (node.layer.CLASS_NAME == "OpenLayers.Layer.Vector")
 					activeLayer = node.layer;
 				else
 					activeLayer = undefined;
 			},
 			// When a layer is checked or unchecked
 			checkchange: function(node, e) {
-				if (node.layer.isBaseLayer == false) {
+				if (node.layer.CLASS_NAME == "OpenLayers.Layer.Vector") {
 					ToggleLegend();
 				}
 			},
@@ -300,7 +300,27 @@ Ext.onReady(function() {
         items: [mapPanel, westPanel, legendPanel]
     });	
  });
- 
+
+// Show an alert
+function MyAlert(text) {
+    Ext.MessageBox.show({
+       title: 'Alert',
+       msg: text,
+       buttons: Ext.MessageBox.OK,
+       icon: Ext.MessageBox.ERROR
+   });
+}
+
+// Show an info box
+function MyInfo(text) {
+    Ext.MessageBox.show({
+       title: 'Result',
+       msg: text,
+       buttons: Ext.MessageBox.OK,
+       icon: Ext.MessageBox.INFO
+   });
+}
+
 // Check if the object is in the array
 function IsIn(arr, obj){
 	for(var i=0; i < arr.length; i++) {

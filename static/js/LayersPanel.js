@@ -85,25 +85,12 @@ function CreateDataServicesToolbar(){
 		// text: "Url",
 		icon: 'static/images/add-link-icon.png',
         tooltip: 'Enter the base url of a WFS to add to the map.',
-		menu: new Ext.menu.Menu({
-			items: [{
-				text: 'Enter a base WFS url, e.g. http://services.azgs.az.gov/arcgis/services/aasggeothermal/CAaqSpringChemistry/MapServer/WFSServer'
-			},{
-				icon: 'static/images/add-link-icon.png',
-				xtype:'textfield',
-				fieldLabel: 'Base Url',
-				name: 'baseUrl',
-				width: 650,
-				listeners: {
-					'specialkey': function(elem,evnt){
-						// If the 'Enter' key is pressed get the layers for the url
-						if(evnt.getKey() == 13)	{
-							GetCapabilities(elem.el.dom.value);
-						}
-					}
-				}
-			}]
-		})
+        handler: function (e) {
+        	Ext.MessageBox.prompt('Add a WFS', 'Enter the URL of the WFS, e.g. http://services.azgs.az.gov/arcgis/services/aasggeothermal/AZVolcanicVents/MapServer/WFSServer', function(btn, text) {
+        		if (text != "")
+					GetCapabilities(text);
+        	});
+        }
 	}]);
 	
 	return dataServicesToolbar;

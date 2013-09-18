@@ -29,15 +29,15 @@ function GetCapabilities(baseUrl){
 					var capFormat = new OpenLayers.Format.WFSCapabilities();
 					var cap = capFormat.read(resp.responseText);
 					if (cap == undefined || cap.error != undefined)
-						alert("There was a problem with the service at " + baseUrl + ". Try again later.");
+						MyAlert("There was a problem with the service at " + baseUrl + ". Try again later.");
 					// Get the feature layers
 					else
 						GetLayers(cap, baseUrl);
 				}
 				else if (resp.status == 404)
-					alert("Unable to reach " + baseUrl + ". Try again later.");
+					MyAlert("Unable to reach " + baseUrl + ". Try again later.");
 				else
-					alert("Unable to reach " + baseUrl + ". Try again later.");
+					MyAlert("Unable to reach " + baseUrl + ". Try again later.");
 			}
 		});
 	}
@@ -53,7 +53,7 @@ function GetLayers(cap, baseUrl){
 	
 	// Check if there are any feature types in the data service
 	if (cap.featureTypeList.featureTypes.length == 0)
-		alert("There are no feature types in '" + dataServiceTitle + "'.");
+		MyAlert("There are no feature types in '" + dataServiceTitle + "'.");
 
 	else{		
 		// Get each feature layer listed in the capabilities
@@ -70,9 +70,9 @@ function GetLayers(cap, baseUrl){
 				r = confirm("There are " + hits + " " + featureName + " features. They make take awhile to draw.\n-Hit cancel\n-Zoom to a smaller area\n-Turn on the set extent toggle on the toolbar.\n-Select the layer again.\nOr hit OK to attempt to draw anyway.");
 			if (hits == 0){
 				if (bounds != undefined)
-					alert("There were 0 " + featureName + " features returned. Try changing the set extent or turn off the set extent toggle on the toolbar.");
+					MyAlert("There were 0 " + featureName + " features returned. Try changing the visible map extent or turn off the set extent toggle on the toolbar.");
 				else
-					alert("There were 0 " + featureName + " features returned. There may be a problem with the server.");
+					MyAlert("There were 0 " + featureName + " features returned. There may be a problem with the server.");
 				r = false;
 			}
 
@@ -96,7 +96,7 @@ function GetLayers(cap, baseUrl){
 				});
 				
 		//		if (wfsLayers[l].features.length == 0)
-		//			alert("There were 0 " + featureName + " features returned for this layer. Try loading the layer again.");
+		//			MyAlert("There were 0 " + featureName + " features returned for this layer. Try loading the layer again.");
 				//console.log(bounds);
 				if (bounds != undefined) {
 					bboxFilter = new OpenLayers.Filter.Spatial({
@@ -125,7 +125,7 @@ function GetLayers(cap, baseUrl){
 					//console.log(e);
 					//console.log(e.object);
 					if ((e.object == undefined) || (e.object.features.length == 0))
-						alert(featureName + " wasn't loaded correctly. Try again.");
+						MyAlert(featureName + " wasn't loaded correctly. Try again.");
 					else {
 						// Set the maximum bounds for all the loaded layers & Zoom to those bounds
 						SetLayersExtent(e.object);
@@ -171,16 +171,16 @@ function GetHits(baseUrl, featureName){
 					}
 				}
 				else if (resp.status == 404){
-					alert("Unable to reach " + baseUrl + ". Try again later.");
+					MyAlert("Unable to reach " + baseUrl + ". Try again later.");
 				}
 				else{
-					alert("Unable to reach " + baseUrl + ". Try again later.");
+					MyAlert("Unable to reach " + baseUrl + ". Try again later.");
 				}
 			}
 		});
 	}
 	catch (e) {
-		alert("Unable to determine the number of features.");
+		MyAlert("Unable to determine the number of features.");
 	}
 }
 

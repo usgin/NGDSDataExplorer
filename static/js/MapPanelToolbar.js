@@ -1,15 +1,16 @@
 /*************************************************************************************************************************************************
 /	Map Panel Toolbar
 /	Create the components that make up the Map Panel Toolbar:
-/		- zoom extent
-/		- previous | next
-/		- set extent
-/		- select box
-/		- clear selected
-/		- show popups
-/		- measure
-/		- merge & view data (see Export.js)
-/		- help (see Help.js)
+/		- Zoom Extent
+/		- Previous | Next Views
+/		- Set Extent
+/		- Select Box
+/		- Clear Selected
+/		- Identify Feature
+/		- Measure
+/		- Address Lookup
+/		- Merge & View data (see Export.js)
+/		- Help (see Help.js)
 /************************************************************************************************************************************************/
 
 // Create the toolbar above the map with various actions
@@ -20,7 +21,7 @@ var ctrl, action, toolbarItems = [], actions = {};
     action = new GeoExt.Action({
 		handler: function () {
 			if (maxLeftB == undefined || maxBottomB == undefined || maxRightB == undefined || maxTopB == undefined)
-				alert("Load a layer first.");
+				MyAlert("Load a data layer first.");
 			else {
 				// Get the max bounds
 				var maxBoundsBox =  new OpenLayers.Bounds(maxLeftB, maxBottomB, maxRightB, maxTopB);	
@@ -207,29 +208,16 @@ var ctrl, action, toolbarItems = [], actions = {};
 	action = new Ext.Action({ 
        // text: "Address Lookup",
         icon: 'static/images/find.png',
-        tooltip: "Lookup an address.",
+        tooltip: "Lookup a location.",
 		id: "address",
-		menu: new Ext.menu.Menu({
-			items: [{
-				text: 'Type an address and press Enter.'
-			},{
-			icon: 'static/images/find.png',
-			xtype:'textfield',
-			fieldLabel: 'Address',
-			name: 'address',
-			width: 650,
-			listeners: {
-				'specialkey': function(elem,evnt){
-					// If the 'Enter' key is pressed get the layers for the url
-					if(evnt.getKey() == 13)	{
-						GetAddress(elem.el.dom.value);
-					}
-				}
-			}
-			}]
-		})
+        handler: function (e) {
+			Ext.MessageBox.prompt('Address Lookup', 'Enter the address of a location. e.g. 1000 Independence Ave SW, Washington, DC 20585', function(btn, text) {
+				if (text != "")
+					PlaceMarker(text);
+			});
+		}
     });
-    actions["measure"] = action;
+    actions["address"] = action;
     toolbarItems.push(action);
 	toolbarItems.push("-");	
 	
@@ -237,6 +225,11 @@ var ctrl, action, toolbarItems = [], actions = {};
 	action = new GeoExt.Action({
         text: "Merge Data & Export",
         tooltip: "Merge data from checked layers into one table or a downloadable CSV.",
+        handler: function(item, pressed) {
+        	// turn off measure
+			var m = Ext.getCmp('measure');
+			m.toggle(false);
+		},
 		menu: new Ext.menu.Menu({
 			items: [{
 				text: "All Features of Checked Layers to a CSV",
@@ -388,22 +381,33 @@ function handleMeasurements(event) {
 	var measure = event.measure;
 	if (measure.toFixed(3) != 0.000) {
 		var output  = "Distance = " + measure.toFixed(3) + " " + units;
-		alert(output);
-		}
+		MyInfo(output);
+	}
 }
 
-// Google Geocoding
-function GetAddress(address) {
+// Use Google Geocoding to find the address and then place a marker
+function PlaceMarker(address) {
 	
 	var geocoder = new google.maps.Geocoder();
 	geocoder.geocode({ 'address': address }, function (results, status) {
 	  	if (status == google.maps.GeocoderStatus.OK) {
-	    	console.log("Geocoding Result: " + results[0].geometry.location);     
-	        map.setCenter(new OpenLayers.LonLat(results[0].geometry.location.kb, results[0].geometry.location.jb).transform(wgs84, googleMercator), 13);                         
+	    	console.log("Geocoding Result: " + results[0].geometry.location);
+	    	
+    		lon = results[0].geometry.location.kb;
+			lat = results[0].geometry.location.jb;
+			map.setCenter(new OpenLayers.LonLat(lon, lat).transform(wgs84, googleMercator), 13);
+			
+			var markers = new OpenLayers.Layer.Markers(address);
+			map.addLayer(markers);
+			
+			var size = new OpenLayers.Size(21,25);
+			var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+			var icon = new OpenLayers.Icon('static/lib/OpenLayers-2.13.1/img/marker.png', size, offset);
+			markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(lon,lat).transform(wgs84, googleMercator),icon));                           
 	    }
 	    else {
-	    	console.log("Geocoding failed: " + status);                            
+	    	console.log("Geocoding failed: " + status);    
+	    	MyAlert("No results found.");                        
 	    }
     });
 }
-

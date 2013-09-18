@@ -2,10 +2,10 @@
 /	Right Click Menu (Context Menu)
 /	Create the components the make up the context menu for the layer list:
 /		- Zoom to Layer Extent
-/ 		- View Table of All Features
-/		- View Table of Selected Features
 /		- Export All Features to a CSV
+/		- Export All Features to a Table
 /		- Export Selected Features to a CSV
+/		- Export Selected Features to a Table
 /		- Remove Layer
 /		- Get the URL of the WFS Server
 /		- Layer Metadata
@@ -73,37 +73,44 @@ function CreateContextMenu(){
 	    },{
 	        text: "Get the URL of the WFS Server",
 	        icon: 'static/images/link.png',
-	        handler: function () {
+	        handler: function (e) {
 	        	var node = layersPanel.getSelectionModel().getSelectedNode();
-	        	window.prompt ("Copy to clipboard: Ctrl+C/Cmd+C, Enter", node.layer.protocol.url);
-	        }
+	        	if (node.layer.CLASS_NAME == 'OpenLayers.Layer.Vector')
+        			Ext.MessageBox.alert('Get WFS URL', node.layer.protocol.url);
+        	    else
+	        		MyAlert("This layer was not created from a WFS so there is no server URL to obtain.");
+        	}
 	    },{
 	        text: "Layer Metadata",
 	        icon: 'static/images/metadata-icon.png',
 	        handler: function () {
-	            if (!winContext) {
-	                var node = layersPanel.getSelectionModel().getSelectedNode();
-	                var layername = node.text;
-	                var winContext = new Ext.Window({
-	                    title: '<span style="color:#00; font-weight:bold;"></span>' + layername,
-	                    layout: 'fit',
-	                    text: layername,
-	                    width: 800,
-	                    height: 500,
-	                    closeAction: 'hide',
-	                    plain: true,
-	                   	items: CreateMetadata(node.layer),
-	                    buttons: [{
-	                        text: 'Close',
-	                            handler: function () {
-	                                winContext.hide();
-	                            }
-	                        }]
-	                    });
-	                }
-	            winContext.show(this);
-	        },
-	        scope: this
+	        	var node = layersPanel.getSelectionModel().getSelectedNode();
+	        	if (node.layer.CLASS_NAME == 'OpenLayers.Layer.Vector') {
+		            if (!winContext) {
+		                var layername = node.text;
+		                var winContext = new Ext.Window({
+		                    title: '<span style="color:#00; font-weight:bold;"></span>' + layername,
+		                    layout: 'fit',
+		                    text: layername,
+		                    width: 800,
+		                    height: 500,
+		                    closeAction: 'hide',
+		                    plain: true,
+		                   	items: CreateMetadata(node.layer),
+		                    buttons: [{
+		                        text: 'Close',
+		                            handler: function () {
+		                                winContext.hide();
+		                            }
+		                        }]
+		                    });
+		                }
+		            winContext.show(this);
+		        	}
+		       	else
+		       		MyAlert("No metadata for this layer.");      		
+		        },
+		 	scope: this
 		}]
 	});
 }
@@ -182,10 +189,10 @@ function FixKeyFormat(s) {
 // Remove a layer from the layer list
 function RemoveLayer(layer) {
 	
-	if (layer.isBaseLayer == false) {
+	if (layer.CLASS_NAME == 'OpenLayers.Layer.Vector') {
 		ToggleLegend("close");
 
-		// Get the index of the additional layer creation for selection
+		// Get the index of the additional layer created for selection
 		index = map.layers.indexOf(layer);
 		selLayer = map.layers[index + 1];
 
@@ -204,5 +211,7 @@ function RemoveLayer(layer) {
 		ZoomToLayersExtent();
 	}
 	else
-		alert("Can't remove a baselayer.");
+		map.removeLayer(layer, false);
+	
+	console.log(layer.name + " layer removed");
 }

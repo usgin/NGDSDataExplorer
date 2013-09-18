@@ -44,9 +44,11 @@ function MakeSelectable(){
 				CreatePopup(e.feature);
 		},
 		"featureunselected": function(e) {
-			// If a popup has been opened, close it on unselect
+			if (showPopups == true)
+				CreatePopup(e.feature);
+		/*	// If a popup has been opened, close it on unselect
 			if (popup != undefined)
-				popup.close();
+				popup.close(); */
 		}
 	});
 }

@@ -8,16 +8,14 @@
 function ExportSingleLayer(exportLayer, outputType, outputSet) {
 	var exportFeatures;
 	
-	if (exportLayer.isBaseLayer == true)
-		alert("Can't export a baselayer.");
-	else {
+	if (exportLayer.CLASS_NAME == 'OpenLayers.Layer.Vector') {
 		if (outputSet == "all")
 			exportFeatures = exportLayer.features;
 		else if (outputSet == "selected")
 			exportFeatures = exportLayer.selectedFeatures;		
 	
 		if (exportFeatures.length == 0)
-			alert("There are no features selected.");
+			MyAlert("There are no features selected.");
 		else {
 			if (outputType == "html")
 				ExportHTML(exportLayer, exportFeatures);
@@ -25,11 +23,13 @@ function ExportSingleLayer(exportLayer, outputType, outputSet) {
 				ExportCSV(exportLayer, exportFeatures);
 		}
 	}
+	else
+		MyAlert("Can only export data layers.");
 }
 
 // Create a html table or a csv file from multiple layers
 function ExportMultipleLayers(outputType, outputSet) {
-	
+
 	// Determine how many vector layers are checked
 	var exportLayers = [];
 	var lyrs = map.layers;
@@ -42,7 +42,7 @@ function ExportMultipleLayers(outputType, outputSet) {
 	// Create the list of features to be exported
 	var exportFeatures = [];
 	if (exportLayers.length == 0)
-		alert("Check at least one layer.");
+		MyAlert("Check at least one data layer.");
 	else {
 		if (outputSet == "all"){
 			for (var i=0; i < exportLayers.length; i++)
@@ -54,7 +54,7 @@ function ExportMultipleLayers(outputType, outputSet) {
 		}
 	
 		if (exportFeatures.length == 0)
-			alert("There are no features selected.");
+			MyAlert("There are no features selected.");
 		else {
 			// If there is only one layer to be exported
 			if (exportLayers.length == 1)
@@ -115,7 +115,7 @@ function GetPrimaryLayer(exportLayers) {
 		}
 		// If no layer is set as the active (highlighted) layer
 		else { 
-			alert("More than one layer is checked. Click the name of the layer whose attributes you would like to use for the column headings, highlighting the layer name in blue.");
+			MyAlert("More than one layer is checked. Click the name of the layer whose attributes you would like to use for the column headings, highlighting the layer name in blue.");
 			exportLayer = null;
 		}
 	}
@@ -215,7 +215,7 @@ function ExportCSV(exportLayer, exportFeatures) {
 		window.open('/files/data.csv', '_blank');
 	}
 	catch (e) {
-		alert("Unable to download the CSV file.");
+		MyAlert("Unable to download the CSV file.");
 	}
 }
 

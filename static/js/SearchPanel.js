@@ -104,7 +104,7 @@ function DoSearch() {
 	// Remove leading and trailing whitespace and wildcards
 	searchTerm = searchTerm.trim();
 	if (searchTerm == "")
-		alert("Enter a search term.");
+		MyAlert("Enter a search term.");
 	else {
 		// If there is more than one search term and they are not separated by an AND or OR already
 		// then add an AND between the words
