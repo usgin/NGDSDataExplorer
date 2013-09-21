@@ -1,5 +1,6 @@
 node_modules/
 static/js/HelpText.html
+static/js/scratch.js
 files/
 .gitignore
 .project

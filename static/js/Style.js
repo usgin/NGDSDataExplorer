@@ -4,17 +4,45 @@
 
 // Specify the style options for the features
 function SetStyle(){
-
+	
+	var sketchSymbolizers = {
+        "Point": {
+            pointRadius: 4.5,
+            //externalGraphic: 'static/images/metadata-icon.png',
+            // graphicName: "square",
+            fillColor: GetRandomColor(),
+            fillOpacity: 1,
+            strokeWidth: 1,
+            strokeOpacity: 1,
+            strokeColor: "#333333"
+        },
+        "Line": {
+            strokeWidth: 2.5,
+            strokeOpacity: 1,
+            strokeColor: "#8B4513", // SaddleBrown
+            // strokeDashstyle: "dash"
+        },
+        "Polygon": {
+            strokeWidth: 2,
+            strokeOpacity: 1,
+            strokeColor: "#666666",
+            fillColor: GetRandomColor(),
+            fillOpacity: 0.3
+        }
+    };
+            
 	var defaultStyle = new OpenLayers.Style({});
 		
 	var selectStyle = new OpenLayers.Style({
 		fillColor: "yellow",
-		strokeColor: "red"
+		strokeColor: "red",
+		fillOpacity: 0.6,
+		strokeWidth: 2		
 	});
 
 	var style = new OpenLayers.StyleMap({
-            'default': defaultStyle,
-            'select': selectStyle
+           'default': defaultStyle,
+           'select': selectStyle
         });
 		
 	var context = {
@@ -26,11 +54,7 @@ function SetStyle(){
 	style.styles['default'].addRules([
 		new OpenLayers.Rule({
 			title: "${title}",
-            symbolizer: {
-				pointRadius: 5,
-				fillColor: GetRandomColor(),
-				strokeWidth: .5 
-			}
+			symbolizer: sketchSymbolizers
         })
 	]);
 	return style;
@@ -43,12 +67,6 @@ function GetRandomColor(){
     for (var i = 0; i < 6; i++ ) {
         color += letters[Math.round(Math.random() * 15)];
     }
-	
-	// Check to see if the color has already been used and if not add the color to the usedColors array
-	if (IsIn(usedColors, color))
-		GetRandomColor();
-	else
-		usedColors.push(color);
-
+    
     return color;
 }

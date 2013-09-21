@@ -52,23 +52,12 @@ function CreateContextMenu(){
 	        	var node = layersPanel.getSelectionModel().getSelectedNode();
 	        	ExportSingleLayer(node.layer, "html", "selected");
 	        }
-	    },/*{
-	        text: "Clear Selected",
-	        handler: function () {
-	        	var node = layersPanel.getSelectionModel().getSelectedNode();
-				console.log(node);
-	        }
-	    },*/{
+	    },{
 	        text: "Remove Layer",
 	        icon: 'static/images/remove-layer-icon.png',
 	        handler: function () {
 	        	var node = layersPanel.getSelectionModel().getSelectedNode();
 	        	RemoveLayer(node.layer);
-	        	//console.log(activeLayer);
-	        /*	if (activeLayer != undefined)
-	        		console.log("activeLayer name: " + activeLayer.name);
-	        	else
-	        		console.log("active is not defined"); */
 	        }
 	    },{
 	        text: "Get the URL of the WFS Server",
@@ -78,7 +67,7 @@ function CreateContextMenu(){
 	        	if (node.layer.CLASS_NAME == 'OpenLayers.Layer.Vector')
         			Ext.MessageBox.alert('Get WFS URL', node.layer.protocol.url);
         	    else
-	        		MyAlert("This layer was not created from a WFS so there is no server URL to obtain.");
+	        		alert("This layer was not created from a WFS so there is no server URL to obtain.");
         	}
 	    },{
 	        text: "Layer Metadata",
@@ -108,7 +97,7 @@ function CreateContextMenu(){
 		            winContext.show(this);
 		        	}
 		       	else
-		       		MyAlert("No metadata for this layer.");      		
+		       		alert("No metadata for this layer.");      		
 		        },
 		 	scope: this
 		}]

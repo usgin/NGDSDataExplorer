@@ -44,10 +44,6 @@ var maxTopB, maxBottomB;	// Maximum top and bottom bounds of all layers
 var wgs84 = new OpenLayers.Projection("EPSG:4326");
 var googleMercator = new OpenLayers.Projection("EPSG:900913");
 
-// Array to track of the colors used to display the features so there is no repetition
-// Add black & the same yellow used for selected features to the list
-var usedColors = ['#000000','#080000','#100000','#200000','#280000','#300000','#FFFF00','#FFFF33']; 
-
 Ext.onReady(function() {
 	// Initialize QuickTips for toolbar tips on mouseover
 	Ext.QuickTips.init();
@@ -300,16 +296,6 @@ Ext.onReady(function() {
         items: [mapPanel, westPanel, legendPanel]
     });	
  });
-
-// Show an alert
-function MyAlert(text) {
-    Ext.MessageBox.show({
-       title: 'Alert',
-       msg: text,
-       buttons: Ext.MessageBox.OK,
-       icon: Ext.MessageBox.ERROR
-   });
-}
 
 // Show an info box
 function MyInfo(text) {

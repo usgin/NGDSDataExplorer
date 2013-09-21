@@ -15,7 +15,7 @@ function ExportSingleLayer(exportLayer, outputType, outputSet) {
 			exportFeatures = exportLayer.selectedFeatures;		
 	
 		if (exportFeatures.length == 0)
-			MyAlert("There are no features selected.");
+			alert("There are no features selected.");
 		else {
 			if (outputType == "html")
 				ExportHTML(exportLayer, exportFeatures);
@@ -24,7 +24,7 @@ function ExportSingleLayer(exportLayer, outputType, outputSet) {
 		}
 	}
 	else
-		MyAlert("Can only export data layers.");
+		alert("Can only export data layers.");
 }
 
 // Create a html table or a csv file from multiple layers
@@ -42,7 +42,7 @@ function ExportMultipleLayers(outputType, outputSet) {
 	// Create the list of features to be exported
 	var exportFeatures = [];
 	if (exportLayers.length == 0)
-		MyAlert("Check at least one data layer.");
+		alert("Check at least one data layer.");
 	else {
 		if (outputSet == "all"){
 			for (var i=0; i < exportLayers.length; i++)
@@ -54,7 +54,7 @@ function ExportMultipleLayers(outputType, outputSet) {
 		}
 	
 		if (exportFeatures.length == 0)
-			MyAlert("There are no features selected.");
+			alert("There are no features selected.");
 		else {
 			// If there is only one layer to be exported
 			if (exportLayers.length == 1)
@@ -88,7 +88,7 @@ function GetPrimaryLayer(exportLayers) {
 			if (IsIn(exportLayers, activeLayer) == true) {
 				// If the feature types of the checked layers do NOT match
 				if (MatchingFeatureTypes(exportLayers) == false) {
-					if (confirm("Warning! Feature type MISMATCH!\nColumn headings will be taken from: " + activeLayer.name + "\n\n Continue anyway?") == true)
+					if (confirm("Warning! Feature type MISMATCH!\nColumn headings will be taken from: " + activeLayer.name + "\n\nContinue?") == true)
 						exportLayer = activeLayer;
 					else
 						exportLayer = null;
@@ -100,13 +100,13 @@ function GetPrimaryLayer(exportLayers) {
 			// If the active (highlighted) layer is NOT one of the checked layers
 			else {
 				if (MatchingFeatureTypes(exportLayers) == false) {
-					if (confirm("Warning! Feature type MISMATCH!\nColumn headings will be taken from: " + activeLayer.name + "\n\n Continue anyway?") == true)
+					if (confirm("Warning! Feature type MISMATCH!\nColumn headings will be taken from: " + activeLayer.name + "\n\nContinu?") == true)
 						exportLayer = activeLayer;
 					else
 						exportLayer = null;		
 				}
 				else {
-					if (confirm("Warning!\nColumn headings will be taken from: " + activeLayer.name + "\n\n Continue anyway?") == true)
+					if (confirm("Warning!\nColumn headings will be taken from: " + activeLayer.name + "\n\nContinue?") == true)
 						exportLayer = activeLayer;
 					else
 						exportLayer = null;	
@@ -115,7 +115,7 @@ function GetPrimaryLayer(exportLayers) {
 		}
 		// If no layer is set as the active (highlighted) layer
 		else { 
-			MyAlert("More than one layer is checked. Click the name of the layer whose attributes you would like to use for the column headings, highlighting the layer name in blue.");
+			alert("More than one layer is checked.\nClick the name of the layer whose attributes you would like to use for the column headings, highlighting the layer name in blue.");
 			exportLayer = null;
 		}
 	}
@@ -215,7 +215,7 @@ function ExportCSV(exportLayer, exportFeatures) {
 		window.open('/files/data.csv', '_blank');
 	}
 	catch (e) {
-		MyAlert("Unable to download the CSV file.");
+		alert("Unable to download the CSV file.");
 	}
 }
 
@@ -253,19 +253,19 @@ function WriteCSVRows(exportFeatures, output) {
 	return output;
 }
 
-/*
-function MatchedSchemas(layerAttributes) {
-	for (var i=0; i < layerAttributes.length; i++) {
-		for (var j=1; j < layerAttributes.length; j++) {
-			if (layerAttributes[i].length != layerAttributes[j].length)
-				return false;
-			for (var m=0; m < layerAttributes[i].length; m++) {
-				for (var n=0; n < layerAttributes[j].length; n++) {
-					if (layerAttributes[i][m].name != layerAttributes[j][n].name)
-						return false;
-				}
-			}
+// Call DescribeFeatureType to get list of attributes for the active layer
+function GetAttributes(protocol){
+	var baseUrl = protocol.url;
+	OpenLayers.Request.GET({
+		url: baseUrl+'?SERVICE=WFS&version=1.1.0&REQUEST=DescribeFeatureType&namespace=wfs'+'&typeName='+protocol.featureType,
+		async: false,
+		success: function(resp) {
+			// Format the response as WFS Capabilities
+			var DesFormat = new OpenLayers.Format.WFSDescribeFeatureType();
+			var des = DesFormat.read(resp.responseText);
+			
+			// Get the number of attributes and the attributes themselves
+			layerAttributes = des.featureTypes[0].properties;
 		}
-	}
-	return true;
-}*/
+	});
+}

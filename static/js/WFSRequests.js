@@ -29,15 +29,20 @@ function GetCapabilities(baseUrl){
 					var capFormat = new OpenLayers.Format.WFSCapabilities();
 					var cap = capFormat.read(resp.responseText);
 					if (cap == undefined || cap.error != undefined)
-						MyAlert("There was a problem with the service at " + baseUrl + ". Try again later.");
+						alert("There was a problem with the service at " + baseUrl + ".\nTry again later.");
 					// Get the feature layers
-					else
-						GetLayers(cap, baseUrl);
+					else {
+						// Check if there are any feature types in the data service
+						if (cap.featureTypeList.featureTypes.length == 0)
+							alert("There are no feature types in " + cap.serviceIdentification.title + ".");
+						else
+							GetLayers(cap, baseUrl);
+					}
 				}
 				else if (resp.status == 404)
-					MyAlert("Unable to reach " + baseUrl + ". Try again later.");
+					alert("Unable to reach " + baseUrl + ".\nTry again later.");
 				else
-					MyAlert("Unable to reach " + baseUrl + ". Try again later.");
+					alert("Unable to reach " + baseUrl + ". \nTry again later.");
 			}
 		});
 	}
@@ -48,104 +53,38 @@ function GetCapabilities(baseUrl){
 
 // Get the feature layers for the selected data service
 function GetLayers(cap, baseUrl){
-	// Get the titile of the data service
-	var dataServiceTitle = cap.serviceIdentification.title;
-	
-	// Check if there are any feature types in the data service
-	if (cap.featureTypeList.featureTypes.length == 0)
-		MyAlert("There are no feature types in '" + dataServiceTitle + "'.");
 
-	else{		
-		// Get each feature layer listed in the capabilities
-		for (var i = 0; i < cap.featureTypeList.featureTypes.length; i++) {
-			var featureName = cap.featureTypeList.featureTypes[i].name;
-			var featureNS = cap.featureTypeList.featureTypes[i].featureNS;
-			
-			hits = undefined;
-			// Get the number of features in the layer
-			GetHits(baseUrl, featureName);
+	// Get each feature layer listed in the capabilities
+	for (var i = 0; i < cap.featureTypeList.featureTypes.length; i++) {
+		var featureName = cap.featureTypeList.featureTypes[i].name;
+		var featureNS = cap.featureTypeList.featureTypes[i].featureNS;
 		
-			var r = true;
-			if (hits > 2500)
-				r = confirm("There are " + hits + " " + featureName + " features. They make take awhile to draw.\n-Hit cancel\n-Zoom to a smaller area\n-Turn on the set extent toggle on the toolbar.\n-Select the layer again.\nOr hit OK to attempt to draw anyway.");
-			if (hits == 0){
-				if (bounds != undefined)
-					MyAlert("There were 0 " + featureName + " features returned. Try changing the visible map extent or turn off the set extent toggle on the toolbar.");
-				else
-					MyAlert("There were 0 " + featureName + " features returned. There may be a problem with the server.");
-				r = false;
-			}
-
-			if (r == true) {
-				
-				// Create the server request for the layer
-				wfsLayers[l] = new OpenLayers.Layer.Vector(featureName+" ("+dataServiceTitle+")", {
-					strategies: [new OpenLayers.Strategy.Fixed()],
-					protocol: new OpenLayers.Protocol.WFS({
-						//version: "1.1.0",                            //  !!!!!!!!!!!!!! Features aren't drawn if use 1.1.0 !!!!!!!!!!!!!!!!!!
-						url: baseUrl,
-						featureType: featureName,
-						featureNS: featureNS,
-						geometryName: "shape"
-					}),
-					events: new OpenLayers.Events({
-						beforefeatureadded: Busy()
-					}),
-					styleMap: SetStyle(),
-					visibility: true
-				});
-				
-		//		if (wfsLayers[l].features.length == 0)
-		//			MyAlert("There were 0 " + featureName + " features returned for this layer. Try loading the layer again.");
-				//console.log(bounds);
-				if (bounds != undefined) {
-					bboxFilter = new OpenLayers.Filter.Spatial({
-						type: OpenLayers.Filter.Spatial.BBOX,
-						value: bounds
-					});
-					wfsLayers[l].filter = bboxFilter;
-				}
-
-				// Set the number of features as the title in the legend
-				wfsLayers[l].events.register("featureadded", wfsLayers[l], function (e) {
-					e.object.styleMap.styles.default.rules[0].title = e.object.features.length.toString() + " features";
-				});
-				
-				// Set the cursor to busy while the layer is loading
-				wfsLayers[l].events.register("loadstart", wfsLayers[l], function (e) {
-					//console.log("Load Start " + e.object.name);
-					Busy();
-				});
-				
-				// Set the cursor back to the default after layer has been loaded
-				wfsLayers[l].events.register("loadend", wfsLayers[l], function (e) {
-					//console.log("Load End " + e.object.name);
-					Ready();
-					
-					//console.log(e);
-					//console.log(e.object);
-					if ((e.object == undefined) || (e.object.features.length == 0))
-						MyAlert(featureName + " wasn't loaded correctly. Try again.");
-					else {
-						// Set the maximum bounds for all the loaded layers & Zoom to those bounds
-						SetLayersExtent(e.object);
-						
-						// Only zoom if the Set Extent toggle is not pressed
-						if (bounds == undefined)
-							ZoomToLayersExtent();	
-					}
-				});
-
-				map.addLayer(wfsLayers[l]);
-				wfsLayers[l].cap = cap;
-				MakeSelectable();
-				
-				l++;
-			}
-			else
-				GetSubregion(cap.featureTypeList.featureTypes[i]);
+		hits = undefined;
+		// Get the number of features in the layer
+		GetHits(baseUrl, featureName);
+		
+		if (hits > 3000) {
+			
+			var msg = "Warning!  " + hits + " " + featureName + " features.\n";
+			msg = msg + "This layer may take awhile to load.\n";
+			msg = msg + "\nTo reduce loading time:\n";
+			msg = msg + "  - Click the Cancel button.\n  - Zoom to a smaller area.\n  - Turn on the Set Extent toggle on the toolbar.\n";
+			msg = msg + "  - Add the layer again and only features within the visible map extent will be loaded.\n";
+			msg = msg + "\nLoad anyway?";
+			
+			if (confirm(msg))
+				LoadLayer(featureName, featureNS, cap, baseUrl);
 		}
-	}	
+		else if (hits == 0){
+			if (bounds != undefined)
+				alert("0 " + featureName + " features returned.\nTry changing the visible map extent or turn off the Set Extent toggle on the toolbar.");
+			else
+				alert("0 " + featureName + " features returned.\nThere may be a problem with the server.");
+		}
+		else
+			LoadLayer(featureName, featureNS, cap, baseUrl);
+	}
+	
 }
 
 // Request the number of hits (number of features) from the server
@@ -171,58 +110,83 @@ function GetHits(baseUrl, featureName){
 					}
 				}
 				else if (resp.status == 404){
-					MyAlert("Unable to reach " + baseUrl + ". Try again later.");
+					alert("Unable to reach " + baseUrl + ".\nTry again later.");
 				}
 				else{
-					MyAlert("Unable to reach " + baseUrl + ". Try again later.");
+					alert("Unable to reach " + baseUrl + ".\nTry again later.");
 				}
 			}
 		});
 	}
 	catch (e) {
-		MyAlert("Unable to determine the number of features.");
+		alert("Unable to determine the number of features.");
 	}
 }
 
-// Call DescribeFeatureType to get list of attributes for the active layer
-function GetAttributes(protocol){
-	var baseUrl = protocol.url;
-	OpenLayers.Request.GET({
-		url: baseUrl+'?SERVICE=WFS&version=1.1.0&REQUEST=DescribeFeatureType&namespace=wfs'+'&typeName='+protocol.featureType,
-		async: false,
-		success: function(resp) {
-			// Format the response as WFS Capabilities
-			var DesFormat = new OpenLayers.Format.WFSDescribeFeatureType();
-			var des = DesFormat.read(resp.responseText);
+// Load the Layer
+function LoadLayer(featureName, featureNS, cap, baseUrl) {
+	
+	// Get the titile of the data service
+	var dataServiceTitle = cap.serviceIdentification.title;
+	
+	// Create the server request for the layer
+	wfsLayers[l] = new OpenLayers.Layer.Vector(featureName+" ("+dataServiceTitle+")", {
+		strategies: [new OpenLayers.Strategy.Fixed()],
+		protocol: new OpenLayers.Protocol.WFS({
+			//version: "1.1.0",                            //  !!!!!!!!!!!!!! Features aren't drawn if use 1.1.0 !!!!!!!!!!!!!!!!!!
+			url: baseUrl,
+			featureType: featureName,
+			featureNS: featureNS,
+			geometryName: "shape"
+		}),
+		events: new OpenLayers.Events({
+			beforefeatureadded: Busy()
+		}),
+		styleMap: SetStyle(),
+		visibility: true
+	});
+	
+	if (bounds != undefined) {
+		bboxFilter = new OpenLayers.Filter.Spatial({
+			type: OpenLayers.Filter.Spatial.BBOX,
+			value: bounds
+		});
+		wfsLayers[l].filter = bboxFilter;
+	}
+
+	// Set the number of features as the title in the legend
+	wfsLayers[l].events.register("featureadded", wfsLayers[l], function (e) {
+		e.object.styleMap.styles.default.rules[0].title = e.object.features.length.toString() + " features";
+	});
+		   
+	// Set the cursor to busy while the layer is loading
+	wfsLayers[l].events.register("loadstart", wfsLayers[l], function (e) {
+		console.log("Load Start " + e.object.name);
+		Busy();
+	});
+	
+	// Set the cursor back to the default after layer has been loaded
+	wfsLayers[l].events.register("loadend", wfsLayers[l], function (e) {
+		console.log("Load End " + e.object.name);
+		Ready();
+
+		if ((e.object == undefined) || (e.object.features.length == 0))
+			alert(featureName + " wasn't loaded correctly.\nTry again.");
+		else {
+			// Set the maximum bounds for all the loaded layers & Zoom to those bounds
+			SetLayersExtent(e.object);
 			
-			// Get the number of attributes and the attributes themselves
-			layerAttributes = des.featureTypes[0].properties;
+			// Only zoom if the Set Extent toggle is not pressed
+			if (bounds == undefined)
+				ZoomToLayersExtent();	
 		}
 	});
-}
 
-// Zoom to the bounds of the feature
-function GetSubregion(featureType) {	
-	// Get the bounds for the feature
-	var featBoundsBox =  new OpenLayers.Bounds(featureType.bounds.left, featureType.bounds.bottom, featureType.bounds.right, featureType.bounds.top);
-	// Transform
-	featBoundsBox = featBoundsBox.transform(wgs84, googleMercator);
-	//console.log(featureType);
-	// Draw orange highlight for bounding box
-/*	var boxLayers;
-	boxLayers = new OpenLayers.Layer.Vector(featureType.name + " bounds");
-	var box = new OpenLayers.Feature.Vector(featBoundsBox.toGeometry());
-	boxLayers.addFeatures(box);
-	map.addLayer(boxLayers); */
+	map.addLayer(wfsLayers[l]);
+	wfsLayers[l].cap = cap;
+	MakeSelectable();
 	
-	// Outline bounding box in red
-/*	var boxes  = new OpenLayers.Layer.Boxes(featureType.name + " bounds");
-	var box = new OpenLayers.Marker.Box(featBoundsBox);
-	boxes.addMarker(box);
-	map.addLayer(boxes);*/
-
-	// Zoom to the bounds
-//	map.zoomToExtent(featBoundsBox);
+	l++;
 }
 
 // Set the maximum bounds for all the loaded layers 
@@ -236,7 +200,7 @@ function SetLayersExtent(lyr) {
 		var curBottomB = lyr.getDataExtent().bottom;
 	}
 	catch (e){
-		
+		console.log("Problem getting the bounds of the current layer.");
 	}
 	
 	// Set the max bound as the current bound if it's undefined

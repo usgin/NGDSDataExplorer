@@ -21,7 +21,7 @@ var ctrl, action, toolbarItems = [], actions = {};
     action = new GeoExt.Action({
 		handler: function () {
 			if (maxLeftB == undefined || maxBottomB == undefined || maxRightB == undefined || maxTopB == undefined)
-				MyAlert("Load a data layer first.");
+				alert("Load a data layer first.");
 			else {
 				// Get the max bounds
 				var maxBoundsBox =  new OpenLayers.Bounds(maxLeftB, maxBottomB, maxRightB, maxTopB);	
@@ -407,7 +407,7 @@ function PlaceMarker(address) {
 	    }
 	    else {
 	    	console.log("Geocoding failed: " + status);    
-	    	MyAlert("No results found.");                        
+	    	alert("No results found.");                        
 	    }
     });
 }

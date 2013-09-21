@@ -23,17 +23,17 @@ function GetRecordsCSW(cswUrl) {
 					CreateCSWStore(cswXML);
 				}
 				else if (resp.status == 404){
-					MyAlert("Unable to reach " + cswUrl + ". Try again later.");
+					alert("Unable to reach " + cswUrl + ".\nTry again later.");
 				}
 				else{
-					MyAlert("Unable to reach " + cswUrl + ". Try again later.");
+					alert("Unable to reach " + cswUrl + ".\nTry again later.");
 				}
 			}
 		});
 	}
 	catch (e){
 		Ready();
-		MyAlert("Search failed.");
+		alert("Search failed.");
 	} 
 }
 
