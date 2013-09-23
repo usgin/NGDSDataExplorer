@@ -212,8 +212,9 @@ var ctrl, action, toolbarItems = [], actions = {};
 		id: "address",
         handler: function (e) {
 			Ext.MessageBox.prompt('Address Lookup', 'Enter the address of a location. e.g. 1000 Independence Ave SW, Washington, DC 20585', function(btn, text) {
-				if (text != "")
-					PlaceMarker(text);
+				if (btn == "ok")
+					if (text != "")
+						PlaceMarker(text);
 			});
 		}
     });
@@ -395,7 +396,7 @@ function PlaceMarker(address) {
 	    	
     		lon = results[0].geometry.location.kb;
 			lat = results[0].geometry.location.jb;
-			map.setCenter(new OpenLayers.LonLat(lon, lat).transform(wgs84, googleMercator), 13);
+			map.setCenter(new OpenLayers.LonLat(lon, lat).transform(wgs84, googleMercator), 10);
 			
 			var markers = new OpenLayers.Layer.Markers(address);
 			map.addLayer(markers);

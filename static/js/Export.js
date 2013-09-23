@@ -100,7 +100,7 @@ function GetPrimaryLayer(exportLayers) {
 			// If the active (highlighted) layer is NOT one of the checked layers
 			else {
 				if (MatchingFeatureTypes(exportLayers) == false) {
-					if (confirm("Warning! Feature type MISMATCH!\nColumn headings will be taken from: " + activeLayer.name + "\n\nContinu?") == true)
+					if (confirm("Warning! Feature type MISMATCH!\nColumn headings will be taken from: " + activeLayer.name + "\n\nContinue?") == true)
 						exportLayer = activeLayer;
 					else
 						exportLayer = null;		

@@ -17,7 +17,7 @@ function SetStyle(){
             strokeColor: "#333333"
         },
         "Line": {
-            strokeWidth: 2.5,
+            strokeWidth: 3,
             strokeOpacity: 1,
             strokeColor: "#8B4513", // SaddleBrown
             // strokeDashstyle: "dash"

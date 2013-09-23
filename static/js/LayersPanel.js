@@ -87,8 +87,9 @@ function CreateDataServicesToolbar(){
         tooltip: 'Enter the base url of a WFS to add to the map.',
         handler: function (e) {
         	Ext.MessageBox.prompt('Add a WFS', 'Enter the URL of the WFS, e.g. http://services.azgs.az.gov/arcgis/services/aasggeothermal/AZVolcanicVents/MapServer/WFSServer', function(btn, text) {
-        		if (text != "")
-					GetCapabilities(text);
+        		if (btn == "ok")
+        			if (text != "")
+						GetCapabilities(text);
         	});
         }
 	}]);

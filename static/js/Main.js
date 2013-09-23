@@ -244,8 +244,9 @@ Ext.onReady(function() {
 			// Right Click Menu
 			contextmenu: function (node, e) {
 				if (node.layer.isBaseLayer == false) {
-					activeLayer = node.layer;
-					node.select();
+					if (node.layer.CLASS_NAME == "OpenLayers.Layer.Vector")
+						activeLayer = node.layer;
+						node.select();
 	                var c = node.getOwnerTree().contextMenu;
 	                c.contextNode = node;
 	                c.showAt(e.getXY());
