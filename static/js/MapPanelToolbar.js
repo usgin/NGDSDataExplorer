@@ -17,28 +17,7 @@
 function CreateToolbar() {
 var ctrl, action, toolbarItems = [], actions = {};
 
-   // Zoom to max extent
-    action = new GeoExt.Action({
-		handler: function () {
-			if (maxLeftB == undefined || maxBottomB == undefined || maxRightB == undefined || maxTopB == undefined)
-				alert("Load a data layer first.");
-			else {
-				// Get the max bounds
-				var maxBoundsBox =  new OpenLayers.Bounds(maxLeftB, maxBottomB, maxRightB, maxTopB);	
-				// Zoom to the bounds
-				map.zoomToExtent(maxBoundsBox);
-			}
-		},
-        map: map,
-        text: "Zoom Extent",
-        icon: 'static/images/zoom-extent-icon.png',
-        tooltip: "Zoom to the maximum extent of all layers, regardless of whether the layer is turned on or off."
-    });
-    actions["max_extent"] = action;
-    toolbarItems.push(action);
-    toolbarItems.push("-");
-	
-	// Navigation history
+   	// Navigation history
     ctrl = new OpenLayers.Control.NavigationHistory();
     map.addControl(ctrl);
 
@@ -66,6 +45,62 @@ var ctrl, action, toolbarItems = [], actions = {};
     toolbarItems.push(action);
 	toolbarItems.push("-");
 	
+		// Button to allow for selection of mulitple features by drawing a box     
+	action = new Ext.Action({ 
+        text: "Zoom",
+        icon: 'static/images/search.png',
+        tooltip: "Draw a box to zoom to an area.",
+		id: "zoom_box",
+		enableToggle: true, 
+		toggleHandler: function(button, state) {
+
+		if (state == true) {
+			zoomBoxCtrl = new OpenLayers.Control.ZoomBox({alwaysZoom:true});
+			map.addControl(zoomBoxCtrl);
+			zoomBoxCtrl.activate();
+			
+			// turn off select box
+			var sb = Ext.getCmp('select_box');
+			sb.toggle(false);
+			
+			// turn off measure
+			var m = Ext.getCmp('measure');
+			m.toggle(false);
+		
+			// turn off show popups
+			var sp = Ext.getCmp('show_popups');
+			sp.toggle(false);
+			showPopups = false;
+		}
+		else
+			zoomBoxCtrl.deactivate();
+		}
+    });
+    actions["zoom_box"] = action;
+    toolbarItems.push(action);
+    toolbarItems.push("-");	
+    
+    // Zoom to max extent
+    action = new GeoExt.Action({
+		handler: function () {
+			if (maxLeftB == undefined || maxBottomB == undefined || maxRightB == undefined || maxTopB == undefined)
+				alert("Load a data layer first.");
+			else {
+				// Get the max bounds
+				var maxBoundsBox =  new OpenLayers.Bounds(maxLeftB, maxBottomB, maxRightB, maxTopB);	
+				// Zoom to the bounds
+				map.zoomToExtent(maxBoundsBox);
+			}
+		},
+        map: map,
+        text: "Zoom Extent",
+        icon: 'static/images/zoom-extent-icon.png',
+        tooltip: "Zoom to the maximum extent of all layers, regardless of whether the layer is turned on or off."
+    });
+    actions["max_extent"] = action;
+    toolbarItems.push(action);
+    toolbarItems.push("-");
+    
 	// Set the map extent
 	action = new Ext.Action({ 
 		id: "setExtentBtn",
@@ -104,6 +139,10 @@ var ctrl, action, toolbarItems = [], actions = {};
 					selectCtrl.deactivate();
 					selectBoxCtrl.activate();
 					selectBox = true;
+					
+					// turn off zoom box
+					var zb = Ext.getCmp('zoom_box');
+					zb.toggle(false);
 					
 					// turn off show popups
 					var sp = Ext.getCmp('show_popups');
@@ -152,6 +191,10 @@ var ctrl, action, toolbarItems = [], actions = {};
 			if (state == true) {
 				showPopups = true;
 				
+				// turn off zoom box
+				var zb = Ext.getCmp('zoom_box');
+				zb.toggle(false);
+				
 				// turn off select box
 				var sb = Ext.getCmp('select_box');
 				sb.toggle(false);
@@ -186,6 +229,10 @@ var ctrl, action, toolbarItems = [], actions = {};
 		toggleHandler: function(button, state) {
 			if (state == true) {
 				measureCtrl.activate();
+				
+				// turn off zoom box
+				var zb = Ext.getCmp('zoom_box');
+				zb.toggle(false);
 				
 				// turn off show popups
 				var sp = Ext.getCmp('show_popups');

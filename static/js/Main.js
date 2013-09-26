@@ -24,6 +24,7 @@ var showPopups = false;		// We don't want to show popups until user has clicked 
 var activeLayer;			// Current active layer
 var numOfAttributes;   		// Only needed for EXCEL - can delete
 var layerAttributes;		// The attributes of the layer
+var zoomBoxCtrl;
 var selectCtrl; 			// Control for the selection of individual features
 var selectBoxCtrl;			// Control for the selection of mulitple features by drawing a box
 var selectBox = false;		// The 'select box' is not initially pressed
