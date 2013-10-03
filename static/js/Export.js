@@ -244,12 +244,13 @@ function WriteCSVRows(exportFeatures, output) {
 			var curRowData = exportFeatures[i].data;
 			if ((curRowData[curColName]) == undefined)
 				output += ",";
-			else
-				output += ",\"" + curRowData[curColName] + "\"";
+			else{
+				// Escape embedded double quote characters with another double quote for CSV
+				output += ",\"" + curRowData[curColName].replace(/\"/gi,"\"\"") + "\"";
+			}
 		}
 		output += "\n";
 	}	
-		
 	return output;
 }
 
