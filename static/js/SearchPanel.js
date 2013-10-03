@@ -123,13 +123,14 @@ function DoSearch() {
 function CreateSearchBBar(){
 	return new Ext.ux.StatusBar({
 		id: 'search-statusbar',
-		
+
 		// Initial State
 		text: "0 results",
 	 
 		// Button to add the selected layer to the layer list
 		items: [{
 			text: 'Add Layer',
+			icon: "static/images/drop-add.gif",
 			tooltip: 'Add selected service to layers list',
 			handler: function () {
 				GetDataServices();

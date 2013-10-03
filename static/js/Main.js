@@ -12,7 +12,7 @@
 /	To be accessed at http://data.geothermaldatasystem.org/
 /	Developed by Jessica Good Alisdairi at the Arizona Geological Survey
 / 	
-/	Utilizes OpenLayers v2.12-rc7, GeoExt v1.1 and ExtJs v3.4
+/	Utilizes OpenLayers v2.13.1, GeoExt v1.1 and ExtJs v3.4
 /************************************************************************************************************************************************/
 
 // Global Variables
@@ -147,7 +147,6 @@ Ext.onReady(function() {
                 }
             }
         ]
-
 	});
 
 	// The grid which will contain the results of the csw search
