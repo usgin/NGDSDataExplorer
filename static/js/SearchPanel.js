@@ -20,7 +20,7 @@ function SearchForm(){
 		xtype: 'label',
 		fieldLabel: 'catalog',
 		text: 'AASG Geothermal Data Catalog'
-	}]);*/
+	}]);
 	
 	// Create the search field selection drop-down box
 	// Defaults to 'Any Text'
@@ -50,7 +50,7 @@ function SearchForm(){
 				searchField = record.data.value;
 			}
 		}
-	}]);
+	}]); */
 	
 	// Create the search term input text box
 	// Input required by user for search
@@ -66,6 +66,7 @@ function SearchForm(){
 		listeners: {
 			'keyup': function(evt, e) {
 				searchTerm = evt.el.dom.value;
+				searchField = "AnyText";
 			}
 		}
 	}]);

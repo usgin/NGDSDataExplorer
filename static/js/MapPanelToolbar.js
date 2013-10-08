@@ -258,7 +258,7 @@ var ctrl, action, toolbarItems = [], actions = {};
         tooltip: "Lookup a location.",
 		id: "address",
         handler: function (e) {
-			Ext.MessageBox.prompt('Address Lookup', 'Enter the address of a location. e.g. 1000 Independence Ave SW, Washington, DC 20585', function(btn, text) {
+			Ext.MessageBox.prompt('Address Lookup', 'Enter a place, address, city, state, zip code or latitude and longitude in decimal degrees.', function(btn, text) {
 				if (btn == "ok")
 					if (text != "")
 						PlaceMarker(text);

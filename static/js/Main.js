@@ -137,7 +137,7 @@ Ext.onReady(function() {
 	var formPanel = new Ext.FormPanel({
 		id: 'form-panel',
         region: 'north',
-		height: 110,
+		height: 85,
 		hideLabels: true,
 		items: [SearchForm()],
 		buttons: [SearchButton()],
@@ -160,7 +160,7 @@ Ext.onReady(function() {
         autoExpandColumn: 'title',
 		frame: false,
 		hideHeaders: true,
-        height: 120,
+        height: 145,
 		listeners: {
 			// Set curRow to the clicked row
 			rowclick: function (grid, row, e) {
