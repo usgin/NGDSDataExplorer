@@ -70,6 +70,37 @@ function CreateContextMenu(){
 	        		alert("This layer was not created from a WFS so there is no server URL to obtain.");
         	}
 	    },{
+	        text: "Layer Description",
+	        icon: 'static/images/view_text.png',
+	        handler: function () {
+	        	var node = layersPanel.getSelectionModel().getSelectedNode();
+	        	if (node.layer.CLASS_NAME == 'OpenLayers.Layer.Vector') {
+		            if (!winContext) {
+		                var layername = node.text;
+		                var winContext = new Ext.Window({
+		                    title: '<span style="color:#00; font-weight:bold;"></span>' + layername,
+		                    layout: 'fit',
+		                    text: layername,
+		                    width: 800,
+		                    height: 500,
+		                    closeAction: 'hide',
+		                    plain: true,
+		                   	items: GetFieldList(node.layer),
+		                    buttons: [{
+		                        text: 'Close',
+		                            handler: function () {
+		                                winContext.hide();
+		                            }
+		                        }]
+		                    });
+		                }
+		            winContext.show(this);
+		        	}
+		       	else
+		       		alert("No metadata for this layer.");      		
+		        },
+		 	scope: this
+		},{
 	        text: "Layer Metadata",
 	        icon: 'static/images/metadata-icon.png',
 	        handler: function () {
@@ -103,31 +134,93 @@ function CreateContextMenu(){
 		}]
 	});
 }
+
+// Create the text for the Metadata window       
+function GetFieldList(layer) {
+
+	ns = layer.protocol.featureNS;
+	// The following is a hack because the serivces still use the old namespaces
+	newUri = ns.replace("stategeothermaldata.org/uri-gin/aasg/xmlschema", "schemas.usgin.org/uri-gin/ngds/dataschema");
+	console.log(ns);
+	console.log(newUri);
+	var items = [];	
+	
+	for (var i = 0; i < layersInfo.length; i++) {
+		var ver = layersInfo[i].versions;
+		for (var j = 0; j < ver.length; j++) {
+			if (ver[j].uri == newUri) {
+				var layerInfo = layersInfo[i];
+				var layerFields = ver[j].field_info;
+				break;
+			}
+		}
+	}
+	
+	if (layerInfo != undefined) {
+		console.log(layerInfo);
+		console.log(layerFields);
+		
+		var html = "<html><b><u> " + layerInfo.title + " Layer Info </u></b> <br>";
+		html += "<b> URI: </b> <a href=\"" + layerInfo.uri + "\" target=\"_blank\">" + layerInfo.uri + "</a><br>";
+		html += "<b> Last Updated: </b>" + layerInfo.date_updated + "<br>";
+		html += "<b> Description: </b>" + layerInfo.description + "<br>";
+		html += "<b> Discussion: </b>" + layerInfo.discussion + "<br>";
+		html += "<b> Status: </b>" + layerInfo.status + "<br>";
+		
+		var layerVersions = layerInfo.versions;
+		html += "<br><b><u> Versions </u></b>";
+		for (var i = 0; i < layerVersions.length; i++) {
+			html += "<br><b> Version: </b>" + layerVersions[i].version + "<br>";
+			html += "<b> URI: </b> <a href=\"" + layerVersions[i].uri + "\" target=\"_blank\">" + layerVersions[i].uri + "</a><br>";
+			html += "<b> Date Created: </b>" + layerVersions[i].date_created + "<br>";
+			html += "<b> XLS file: </b> <a href=\"" + layerVersions[i].xls_file_path + "\" target=\"_blank\">" + layerVersions[i].xls_file_path + "</a><br>";
+			html += "<b> XSD file: </b> <a href=\"" + layerVersions[i].xsd_file_path + "\" target=\"_blank\">" + layerVersions[i].xsd_file_path + "</a><br>";
+			html += "<b> WFS Sample Request: </b> <a href=\"" + layerVersions[i].sample_wfs_request + "\" target=\"_blank\">" + layerVersions[i].sample_wfs_request + "</a><br>";
+		}
+		
+		html += "<br><b><u> Field List </u></b><br>";
+		html += "<i>Bold field names indicate required fields.</i><br>";
+		for (var i = 0; i < layerFields.length; i++) {
+			if (layerFields[i].optional == false)
+				html += "<br>" + layerFields[i].name + " (" + layerFields[i].type + "): " + layerFields[i].description + "<br>";
+			else
+				html += "<br><b>" + layerFields[i].name + " (" + layerFields[i].type + ")</b>: " + layerFields[i].description + "<br>";
+		}
+		
+		html += "</html>";
+	}
+	else {
+		var html = "<html>Unable to find information about this layer.<br>";
+		html += "<a href=\"" + newUri + "\" target=\"_blank\">" + newUri + "</a> cannot be cross-referenced at ";
+		html += "<a href=\"http://schemas.usgin.org/models/\" target=\"_blank\">http://schemas.usgin.org/models/</a></html>";
+	}
+	
+	items.push({
+		xtype: 'panel',
+		autoScroll: true,
+		html: html
+	});
+	return items;
+}
+
  
 // Create the text for the Metadata window       
 function CreateMetadata(layer) {
 	var items = [];
 	
-	if (layer.isBaseLayer == true) {
-		items.push({
-			xtype: 'panel',
-			autoScroll: true,
-			html: '<b>' + layer.name + '</b>'
-		});
-	}
-	else {	
-		var html = "<b><u> Service Identification </u></b> <br>";
-		html = GetKeys(layer.cap.serviceIdentification, html);
-		html += "<br>";
-		html += "<b><u> Service Provider </u></b> <br>";
-		html = GetKeys(layer.cap.serviceProvider, html);
+	var html = "More a description of this See <ahttp://schemas.usgin.org/models/";
+	var html = "<b><u> Service Identification </u></b> <br>";
+	html = GetKeys(layer.cap.serviceIdentification, html);
+	html += "<br>";
+	html += "<b><u> Service Provider </u></b> <br>";
+	html = GetKeys(layer.cap.serviceProvider, html);
 
-		items.push({
-			xtype: 'panel',
-			autoScroll: true,
-			html: html
-		});
-	}
+	items.push({
+		xtype: 'panel',
+		autoScroll: true,
+		html: html
+	});
+
 	return items;
 }
 

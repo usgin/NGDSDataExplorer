@@ -186,6 +186,9 @@ function LoadLayer(featureName, featureNS, cap, baseUrl) {
 	wfsLayers[l].cap = cap;
 	MakeSelectable();
 	
+	if (layersInfo == undefined)
+		GetLayersInfo();
+	
 	l++;
 }
 
@@ -252,4 +255,31 @@ function ZoomToLayersExtent() {
 		// Zoom to the max bounds
 		map.zoomToExtent(maxBoundsBox);
 	}
+}
+
+function GetLayersInfo() {
+	// Get the info in json format about all the schemas on "http://schemas.usgin.org/contentmodels.json"
+    var url = "http://schemas.usgin.org/contentmodels.json";
+    try {
+        OpenLayers.Request.GET({
+			url: url,
+			async: false,
+			callback: function(resp){
+				Ready();
+				// Response OK
+				if (resp.status == 200) {
+					// Format the response as JSON
+					var layersInfoFormat = new OpenLayers.Format.JSON();
+					layersInfo = layersInfoFormat.read(resp.responseText);
+				}
+				else if (resp.status == 404)
+					alert("Unable to reach " + url + " to get more information about the layer."); 
+				else
+					alert("Unable to reach " + url + " to get more information about the layer."); 
+			}
+		});
+	}
+    catch (e) {
+        alert("Unable to reach " + url + " to get more information about the layer."); 
+    }
 }
