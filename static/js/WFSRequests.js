@@ -257,8 +257,9 @@ function ZoomToLayersExtent() {
 	}
 }
 
+// Get the info in json format about all the schemas on "http://schemas.usgin.org/contentmodels.json"
 function GetLayersInfo() {
-	// Get the info in json format about all the schemas on "http://schemas.usgin.org/contentmodels.json"
+
     var url = "http://schemas.usgin.org/contentmodels.json";
     try {
         OpenLayers.Request.GET({

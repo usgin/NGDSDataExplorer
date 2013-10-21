@@ -13,6 +13,7 @@
 
 // Create the right click menu for the layers panel
 function CreateContextMenu(){
+	
 	return new Ext.menu.Menu({
 	    items: [{
 	        text: "Zoom to Layer Extent",
@@ -70,38 +71,7 @@ function CreateContextMenu(){
 	        		alert("This layer was not created from a WFS so there is no server URL to obtain.");
         	}
 	    },{
-	        text: "Layer Description",
-	        icon: 'static/images/view_text.png',
-	        handler: function () {
-	        	var node = layersPanel.getSelectionModel().getSelectedNode();
-	        	if (node.layer.CLASS_NAME == 'OpenLayers.Layer.Vector') {
-		            if (!winContext) {
-		                var layername = node.text;
-		                var winContext = new Ext.Window({
-		                    title: '<span style="color:#00; font-weight:bold;"></span>' + layername,
-		                    layout: 'fit',
-		                    text: layername,
-		                    width: 800,
-		                    height: 500,
-		                    closeAction: 'hide',
-		                    plain: true,
-		                   	items: GetFieldList(node.layer),
-		                    buttons: [{
-		                        text: 'Close',
-		                            handler: function () {
-		                                winContext.hide();
-		                            }
-		                        }]
-		                    });
-		                }
-		            winContext.show(this);
-		        	}
-		       	else
-		       		alert("No metadata for this layer.");      		
-		        },
-		 	scope: this
-		},{
-	        text: "Layer Metadata",
+	        text: "Layer Information",
 	        icon: 'static/images/metadata-icon.png',
 	        handler: function () {
 	        	var node = layersPanel.getSelectionModel().getSelectedNode();
@@ -116,7 +86,7 @@ function CreateContextMenu(){
 		                    height: 500,
 		                    closeAction: 'hide',
 		                    plain: true,
-		                   	items: CreateMetadata(node.layer),
+		                    items: CreateTabs(node.layer),
 		                    buttons: [{
 		                        text: 'Close',
 		                            handler: function () {
@@ -135,16 +105,41 @@ function CreateContextMenu(){
 	});
 }
 
-// Create the text for the Metadata window       
-function GetFieldList(layer) {
+// Create the tabbed views
+function CreateTabs(layer){
+	var layerInfo = GetLayerInfo(layer);
+    var tabs = new Ext.TabPanel({
+        region: 'center',
+        margins:'3 3 3 0', 
+        activeTab: 0,
+        defaults:{autoScroll:true},
+
+        items:[{
+            title: 'Description',
+            html: layerInfo[0]
+        },{
+            title: 'Model Versions',
+            html: layerInfo[1]
+        },{
+            title: 'Field List',
+            html: layerInfo[2]
+        },{
+            title: 'Metadata',
+            html: CreateMetadata(layer)
+        }]
+    });
+    
+    return tabs;
+}
+
+// Get the layer information from http://schemas.usgin.org/contentmodels.json     
+function GetLayerInfo(layer) {
 
 	ns = layer.protocol.featureNS;
 	// The following is a hack because the serivces still use the old namespaces
 	newUri = ns.replace("stategeothermaldata.org/uri-gin/aasg/xmlschema", "schemas.usgin.org/uri-gin/ngds/dataschema");
-	console.log(ns);
-	console.log(newUri);
+
 	var items = [];	
-	
 	for (var i = 0; i < layersInfo.length; i++) {
 		var ver = layersInfo[i].versions;
 		for (var j = 0; j < ver.length; j++) {
@@ -156,51 +151,48 @@ function GetFieldList(layer) {
 		}
 	}
 	
+	// If the namepace URI cannont be crossreferenced at http://schemas.usgin.org/contentmodels.json layerInfo will be undefined
 	if (layerInfo != undefined) {
-		console.log(layerInfo);
-		console.log(layerFields);
 		
-		var html = "<html><b><u> " + layerInfo.title + " Layer Info </u></b> <br>";
-		html += "<b> URI: </b> <a href=\"" + layerInfo.uri + "\" target=\"_blank\">" + layerInfo.uri + "</a><br>";
-		html += "<b> Last Updated: </b>" + layerInfo.date_updated + "<br>";
-		html += "<b> Description: </b>" + layerInfo.description + "<br>";
-		html += "<b> Discussion: </b>" + layerInfo.discussion + "<br>";
-		html += "<b> Status: </b>" + layerInfo.status + "<br>";
+		var layerDescHtml = "<html><b> Title: </b>" + layerInfo.title + "</b> <br>";
+		layerDescHtml += "<b> URI: </b> <a href=\"" + layerInfo.uri + "\" target=\"_blank\">" + layerInfo.uri + "</a><br>";
+		layerDescHtml += "<b> Last Updated: </b>" + layerInfo.date_updated + "<br>";
+		layerDescHtml += "<b> Description: </b>" + layerInfo.description + "<br>";
+		layerDescHtml += "<b> Discussion: </b>" + layerInfo.discussion + "<br>";
+		layerDescHtml += "<b> Status: </b>" + layerInfo.status + "<br>";
+		layerDescHtml += "</html>";
 		
 		var layerVersions = layerInfo.versions;
-		html += "<br><b><u> Versions </u></b>";
+		var layerVersHtml = "<html>";
 		for (var i = 0; i < layerVersions.length; i++) {
-			html += "<br><b> Version: </b>" + layerVersions[i].version + "<br>";
-			html += "<b> URI: </b> <a href=\"" + layerVersions[i].uri + "\" target=\"_blank\">" + layerVersions[i].uri + "</a><br>";
-			html += "<b> Date Created: </b>" + layerVersions[i].date_created + "<br>";
-			html += "<b> XLS file: </b> <a href=\"" + layerVersions[i].xls_file_path + "\" target=\"_blank\">" + layerVersions[i].xls_file_path + "</a><br>";
-			html += "<b> XSD file: </b> <a href=\"" + layerVersions[i].xsd_file_path + "\" target=\"_blank\">" + layerVersions[i].xsd_file_path + "</a><br>";
-			html += "<b> WFS Sample Request: </b> <a href=\"" + layerVersions[i].sample_wfs_request + "\" target=\"_blank\">" + layerVersions[i].sample_wfs_request + "</a><br>";
+			layerVersHtml += "<b> Version: </b>" + layerVersions[i].version + "<br>";
+			layerVersHtml += "<b> URI: </b> <a href=\"" + layerVersions[i].uri + "\" target=\"_blank\">" + layerVersions[i].uri + "</a><br>";
+			layerVersHtml += "<b> Date Created: </b>" + layerVersions[i].date_created + "<br>";
+			layerVersHtml += "<b> XLS file: </b> <a href=\"" + layerVersions[i].xls_file_path + "\" target=\"_blank\">" + layerVersions[i].xls_file_path + "</a><br>";
+			layerVersHtml += "<b> XSD file: </b> <a href=\"" + layerVersions[i].xsd_file_path + "\" target=\"_blank\">" + layerVersions[i].xsd_file_path + "</a><br>";
+			layerVersHtml += "<b> WFS Sample Request: </b> <a href=\"" + layerVersions[i].sample_wfs_request + "\" target=\"_blank\">" + layerVersions[i].sample_wfs_request + "</a><br><br>";
 		}
+		layerVersHtml += "</html>";
 		
-		html += "<br><b><u> Field List </u></b><br>";
-		html += "<i>Bold field names indicate required fields.</i><br>";
+		var fieldListHtml = "<html>";
+		fieldListHtml += "<i>Bold field names indicate required fields.</i><br>";
 		for (var i = 0; i < layerFields.length; i++) {
-			if (layerFields[i].optional == false)
-				html += "<br>" + layerFields[i].name + " (" + layerFields[i].type + "): " + layerFields[i].description + "<br>";
+			if (layerFields[i].optional == true)
+				fieldListHtml += "<br>" + layerFields[i].name + " (" + layerFields[i].type + "): " + layerFields[i].description + "<br>";
 			else
-				html += "<br><b>" + layerFields[i].name + " (" + layerFields[i].type + ")</b>: " + layerFields[i].description + "<br>";
+				fieldListHtml += "<br><b>" + layerFields[i].name + " (" + layerFields[i].type + ")</b>: " + layerFields[i].description + "<br>";
 		}
 		
-		html += "</html>";
+		fieldListHtml += "</html>";
 	}
 	else {
+		var layerDescHtml = "<html> Unable to get the layer description.</html>";
+		var layerVersHtml = "<html> Unable to get the layer versions.</html>";
+		var fieldListHtml = "<html> Unable to get the field list.</html>";
 		var html = "<html>Unable to find information about this layer.<br>";
-		html += "<a href=\"" + newUri + "\" target=\"_blank\">" + newUri + "</a> cannot be cross-referenced at ";
-		html += "<a href=\"http://schemas.usgin.org/models/\" target=\"_blank\">http://schemas.usgin.org/models/</a></html>";
 	}
 	
-	items.push({
-		xtype: 'panel',
-		autoScroll: true,
-		html: html
-	});
-	return items;
+	return [layerDescHtml, layerVersHtml, fieldListHtml];
 }
 
  
@@ -215,13 +207,7 @@ function CreateMetadata(layer) {
 	html += "<b><u> Service Provider </u></b> <br>";
 	html = GetKeys(layer.cap.serviceProvider, html);
 
-	items.push({
-		xtype: 'panel',
-		autoScroll: true,
-		html: html
-	});
-
-	return items;
+	return html;
 }
 
 // Loop through the keys printing the key and its value, or subkeys if the key is an object

@@ -261,9 +261,9 @@ function GetAttributes(protocol){
 		url: baseUrl+'?SERVICE=WFS&version=1.1.0&REQUEST=DescribeFeatureType&namespace=wfs'+'&typeName='+protocol.featureType,
 		async: false,
 		success: function(resp) {
-			// Format the response as WFS Capabilities
-			var DesFormat = new OpenLayers.Format.WFSDescribeFeatureType();
-			var des = DesFormat.read(resp.responseText);
+			// Format the response as WFS DescribeFeatureType
+			var desFormat = new OpenLayers.Format.WFSDescribeFeatureType();
+			var des = desFormat.read(resp.responseText);
 			
 			// Get the number of attributes and the attributes themselves
 			layerAttributes = des.featureTypes[0].properties;
