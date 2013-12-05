@@ -10,12 +10,15 @@ Utilizes OpenLayers v2.13.1, GeoExt v1.1 and ExtJs v3.4.
 ### In Windows:
 
 * Get the code
+
 ```git clone git@github.com:usgin/NGDSDataExplorer
 ```	
+
 * Install node.js from http://nodejs.org
 
 * Open the Windows command prompt in the NGDSDataExplorer folder created above
 * Install the necessary modules:
+
 ```NGDSDataExplorer> npm install express
 NGDSDDataExplorer> npm install jade
 NGDSDataExplorer> npm install -g coffee-script
@@ -23,6 +26,7 @@ NGDSDataExplorer> npm install request
 ```
 
 * Start the application:
+
 ```NGDSDataExplorer> coffee app.coffee
 ```
 
