@@ -13,15 +13,13 @@ Utilizes OpenLayers v2.13.1, GeoExt v1.1 and ExtJs v3.4.
 * Make a new directory, like C:\NGDS Data Explorer.
 * Open the Windows command prompt in this directory.
 * Install the necessary modules:
-```
-C:\NGDS Data Explorer> npm install express
-C:\NGDS Data Explorer> npm install jade
-C:\NGDS Data Explorer> npm install -g coffee-script
-C:\NGDS Data Explorer> npm install request
-```
+	C:\NGDS Data Explorer> npm install express
+	C:\NGDS Data Explorer> npm install jade
+	C:\NGDS Data Explorer> npm install -g coffee-script
+	C:\NGDS Data Explorer> npm install request
+
 * In the same directory add the files from this Git Repository
 * Back in the windows command prompt type:
-```
-C:\NGDS Data Explorer> coffee app.coffee
-```
+	C:\NGDS Data Explorer> coffee app.coffee
+
 The local site can be accessed at [http://localhost:3000/](http://localhost:3000/).
