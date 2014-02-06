@@ -40,8 +40,7 @@ var measureCtrl;			// Control for the distance measurement tool
 var hits;					// Number of features in the data service layer being requested
 var maxLeftB, maxRightB;	// Maximum left and right bounds of all layers
 var maxTopB, maxBottomB;	// Maximum top and bottom bounds of all layers
-var layersInfo;
-var attributesStore;
+var layersInfo;				// Info for the layer pulled from http://schemas.usgin.org/contentmodels.json
 
 // Projections
 var wgs84 = new OpenLayers.Projection("EPSG:4326");

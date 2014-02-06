@@ -136,7 +136,8 @@ function CreateTabs(layer){
 function GetLayerInfo(layer) {
 
 	ns = layer.protocol.featureNS;
-	// The following is a hack because the serivces still use the old namespaces
+    layer_name = layer.protocol.featureType
+	// The following is a hack because the services still use the old namespaces
 	newUri = ns.replace("stategeothermaldata.org/uri-gin/aasg/xmlschema", "schemas.usgin.org/uri-gin/ngds/dataschema");
 
 	var items = [];	
@@ -145,12 +146,12 @@ function GetLayerInfo(layer) {
 		for (var j = 0; j < ver.length; j++) {
 			if (ver[j].uri == newUri) {
 				var layerInfo = layersInfo[i];
-				var layerFields = ver[j].field_info;
+				var layerFields = ver[j].layers_info[layer_name];
 				break;
 			}
 		}
 	}
-	
+
 	// If the namepace URI cannont be crossreferenced at http://schemas.usgin.org/contentmodels.json layerInfo will be undefined
 	if (layerInfo != undefined) {
 		
