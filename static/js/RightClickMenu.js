@@ -136,15 +136,13 @@ function CreateTabs(layer){
 function GetLayerInfo(layer) {
 
 	ns = layer.protocol.featureNS;
-    layer_name = layer.protocol.featureType
-	// The following is a hack because the services still use the old namespaces
-	newUri = ns.replace("stategeothermaldata.org/uri-gin/aasg/xmlschema", "schemas.usgin.org/uri-gin/ngds/dataschema");
+    layer_name = layer.protocol.featureType;
 
 	var items = [];	
 	for (var i = 0; i < layersInfo.length; i++) {
 		var ver = layersInfo[i].versions;
 		for (var j = 0; j < ver.length; j++) {
-			if (ver[j].uri == newUri) {
+			if (ver[j].uri == ns) {
 				var layerInfo = layersInfo[i];
 				var layerFields = ver[j].layers_info[layer_name];
 				break;
