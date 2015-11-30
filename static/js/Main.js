@@ -117,7 +117,7 @@ Ext.onReady(function() {
 		title: "NGDS Data Explorer",
 		xtype: "gx_mappanel",
 		map: map,
-		layers: [gmap, ghyb, gter],
+		layers: [ghyb, gmap, gter],
 		// Transform the coordinates to Google Web Mercator to center map on US
 		center: new OpenLayers.LonLat(-98.583, 39.833).transform(wgs84, googleMercator), 
 		zoom: 5,
