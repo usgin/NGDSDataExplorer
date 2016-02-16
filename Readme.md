@@ -2,8 +2,8 @@
 
 The National Geothermal Data System (NGDS) Data Explorer was developed to be a lightweight, open-source, publicly-accessible web mapping application which facilitates the discovery of geothermal features without the need to switch between multiple interfaces. An integrated searchof the U.S. Geoscience Information Network (USGIN) Association of American State Geologists (AASG) Geothermal Data Catalog will list relevant web feature services available for attribute querying and display on a map. The search can be limited to a specific geographical extent for further refinement. Once added to the map, attributes for features can either be shown in a feature popup or a table. Users can also select features from different data services for display in a single table. The NGDS Data Explorer is primarily for geologists and other researchers needing a quick and easy way to retrieve information about U.S. geothermal features without the need for software beyond a web browser or the knowledge of who hosts which services. To be accessed at http://data.geothermaldatasystem.org/.
 
-Developed in 2012 by Jessica Good Alisdairi at the Arizona Geological Survey. 
-Utilizes OpenLayers v2.13.1, GeoExt v1.1 and ExtJs v3.4.
+Developed in 2012 by Jessica Good at the Arizona Geological Survey. 
+Utilizes the latest development version of OpenLayers 2 (as of 2016-02-16, no version number but > v2.13.1, see https://github.com/openlayers/ol2), GeoExt v1.1 and ExtJs v3.4.
 
 ## Setting up the Development Environment:
 

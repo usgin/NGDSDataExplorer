@@ -440,18 +440,18 @@ function PlaceMarker(address) {
 	geocoder.geocode({ 'address': address }, function (results, status) {
 	  	if (status == google.maps.GeocoderStatus.OK) {
 	    	console.log("Geocoding Result: " + results[0].geometry.location);
-	    	
-    		lon = results[0].geometry.location.kb;
-			lat = results[0].geometry.location.jb;
-			map.setCenter(new OpenLayers.LonLat(lon, lat).transform(wgs84, googleMercator), 10);
+
+        lon = results[0].geometry.location.lng();
+			  lat = results[0].geometry.location.lat();
+			  map.setCenter(new OpenLayers.LonLat(lon, lat).transform(wgs84, googleMercator), 10);
 			
-			var markers = new OpenLayers.Layer.Markers(address);
-			map.addLayer(markers);
+			  var markers = new OpenLayers.Layer.Markers(address);
+			  map.addLayer(markers);
 			
-			var size = new OpenLayers.Size(21,25);
-			var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-			var icon = new OpenLayers.Icon('static/lib/OpenLayers-2.13.1/img/marker.png', size, offset);
-			markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(lon,lat).transform(wgs84, googleMercator),icon));                           
+			  var size = new OpenLayers.Size(21,25);
+			  var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+			  var icon = new OpenLayers.Icon('static/lib/ol2-master/img/marker.png', size, offset);
+			  markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(lon,lat).transform(wgs84, googleMercator),icon));
 	    }
 	    else {
 	    	console.log("Geocoding failed: " + status);    
